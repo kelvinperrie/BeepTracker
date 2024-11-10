@@ -5,31 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:model="clr-namespace:BeepTracker.Maui.Model"
     xmlns:viewmodel="clr-namespace:BeepTracker.Maui.ViewModel"
-    Title="{Binding BeepRecord.BirdName}"
+    Title="Beep record details"
     x:DataType="viewmodel:BeepEntryDetailsViewModel">
     <ScrollView>
-        <Grid RowDefinitions="Auto,Auto,*,*,*,*,*">
+        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
             <BoxView
                 BackgroundColor="{StaticResource Primary}"
                 Grid.RowSpan="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"/>
-
-            <!--<Border StrokeShape="RoundRectangle 80"
-                    Stroke="White"
-                    StrokeThickness="6"
-                    HeightRequest="172"
-                    WidthRequest="172"
-                    Margin="0,8,0,0"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
-                    <Image Aspect="AspectFill"
-                        HeightRequest="160"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        Source="{Binding Monkey.Image}"
-                        WidthRequest="160"/>
-            </Border>-->
 
             <Label Style="{StaticResource LargeLabel}" 
                    Grid.Row="1"
@@ -40,34 +24,29 @@
                    Margin="0,0,0,8"/>
 
             <VerticalStackLayout Grid.Row="2" Padding="10" Spacing="10">
-                <!-- Add this -->
-                <!--<Button Text="Show on Map" 
-                        Command="{Binding OpenMapCommand}"
-                        HorizontalOptions="Center" 
-                        WidthRequest="200" 
-                        Margin="8"
-                        Style="{StaticResource ButtonOutline}"/>
-
-                <Label Style="{StaticResource MediumLabel}" Text="{Binding Monkey.Details}" />-->
-                <Label Style="{StaticResource MediumLabel}" Text="{Binding BeepRecord.BirdName}" />
-                <!--<Label Style="{StaticResource SmallLabel}" Text="{Binding Monkey.Location, StringFormat='Location: {0}'}" />
-                <Label Style="{StaticResource SmallLabel}" Text="{Binding Monkey.Population, StringFormat='Population: {0}'}" />-->
+                <Label Style="{StaticResource MediumLabel}" Text="Bird:" />
                 <Entry 
-                    MaxLength="20"
+                    MaxLength="50"
                     Text="{Binding BeepRecord.BirdName}" />
+                <Label Style="{StaticResource MediumLabel}" Text="Notes:" />
                 <Entry 
-                    MaxLength="20"
+                    MaxLength="500"
                     Text="{Binding BeepRecord.Notes}" />
+                <Label Style="{StaticResource MediumLabel}" Text="Beats per minute:" />
+                <Entry 
+                    Text="{Binding BeepRecord.BeatsPerMinute}" />
 
             </VerticalStackLayout>
 
-            <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" Grid.Row="3">
+            <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" Grid.Row="3" 
+                            HeightRequest="70" Margin="0" VerticalOptions="Start">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:BeepEntry" >
-                        <Label Style="{StaticResource LargeLabel}" Text="{Binding Value}"  Padding="20">
+                        <Label Style="{StaticResource LargeLabel}" Text="{Binding Value}"  
+                               Padding="10" HeightRequest="50" VerticalOptions="Start">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding Selected}" Value="True">
                                     <Setter Property="BackgroundColor" Value="Yellow"/>
@@ -79,43 +58,32 @@
             </CollectionView>
 
 
-            <HorizontalStackLayout Grid.Row="4">
-                <Button Text="Previous entry"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Command="{Binding PreviousBeepEntryCommand}" />
-                <Button Text="Next entry"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Command="{Binding NextBeepEntryCommand}" />
-                <Button Text="Save record"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Command="{Binding SaveBeepRecordCommand}" />
-            </HorizontalStackLayout>
 
-            <HorizontalStackLayout Grid.Row="5">
-                <Button Text="Add 1"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
+            <Grid WidthRequest="240" Grid.Row="4"
+              HeightRequest="70"
+              ColumnDefinitions="120, 120"
+              RowDefinitions="Auto, Auto"
+              ColumnSpacing="2"
+              RowSpacing="2"
+              HorizontalOptions="Start">
+                <Button Text="Add 1" Grid.Column="0" Grid.Row="1"
                     Command="{Binding Add1Command}" />
-                <Button Text="Subtract 1"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
+                <Button Text="Subtract 1" Grid.Column="1" Grid.Row="1"
                     Command="{Binding Subtract1Command}" />
-                
-            </HorizontalStackLayout>
-            <Grid WidthRequest="240" Grid.Row="6"
-              HeightRequest="480"
+                <Button Text="Previous entry" Grid.Column="0" Grid.Row="0"
+                    Command="{Binding PreviousBeepEntryCommand}" />
+                <Button Text="Next entry" Grid.Column="1" Grid.Row="0"
+                    Command="{Binding NextBeepEntryCommand}" />
+            </Grid>
+
+            <Grid WidthRequest="240" Grid.Row="5"
+              HeightRequest="180"
               ColumnDefinitions="80, 80, 80"
-              RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto"
+              RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
               ColumnSpacing="2"
               RowSpacing="2"
               HorizontalOptions="Start"
               VerticalOptions="Center">
-                <Button Text="CLEAR"
-                    Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
-                    Command="{Binding ClearCommand}" />
                 <Button Text="7"
                     Grid.Row="2" Grid.Column="0"
                     Command="{Binding DigitCommand}"
@@ -153,62 +121,16 @@
                     Command="{Binding DigitCommand}"
                     CommandParameter="3" />
                 <Button Text="0"
-                    Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2"
+                    Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="1"
                     Command="{Binding DigitCommand}"
                     CommandParameter="0" />
-
+                <Button Text="CLEAR"
+                    Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+                    Command="{Binding ClearCommand}" />
+                <Button Text="Save record" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3"
+                    Command="{Binding SaveBeepRecordCommand}" />
             </Grid> 
 
-
-            <!--<HorizontalStackLayout Grid.Row="3">
-                <ContentView>
-                    <CollectionView
-                    ItemsSource="{Binding Beeps}"
-                    SelectionMode="None">
-                        --><!--<CollectionView.EmptyView>
-                        <StackLayout Padding="100">
-                            <Image
-                                HorizontalOptions="Center"
-                                Source="nodata.png"
-                                HeightRequest="160"
-                                WidthRequest="160"
-                                VerticalOptions="Center" />
-                        </StackLayout>
-                    </CollectionView.EmptyView>
-                    <CollectionView.ItemsLayout>
-                        <GridItemsLayout  Orientation="Horizontal" Span="3"/>
-                    </CollectionView.ItemsLayout>--><!--
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate x:DataType="model:BeepEntry">
-                                <Label Style="{StaticResource LargeLabel}" Text="{Binding Value}" />
-                                --><!--<Grid Padding="10">
-                                    <Frame HeightRequest="125" Style="{StaticResource CardView}">
-                                        --><!--<Frame.GestureRecognizers>
-                                            <TapGestureRecognizer 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonkeysViewModel}}, Path=GoToDetailsCommand}"
-                                            CommandParameter="{Binding .}"/>
-                                        </Frame.GestureRecognizers>-->
-                                        <!--<Grid Padding="0" ColumnDefinitions="125,*">
-                                            <Image
-                                            Aspect="AspectFill"
-                                            HeightRequest="125"
-                                            Source="{Binding Image}"
-                                            WidthRequest="125" />
-                                            <VerticalStackLayout
-                                            Grid.Column="1"
-                                            VerticalOptions="Center"
-                                            Padding="10">
-                                                <Label Style="{StaticResource LargeLabel}" Text="{Binding Name}" />
-                                                <Label Style="{StaticResource MediumLabel}" Text="{Binding Location}" />
-                                            </VerticalStackLayout>
-                                        </Grid>--><!--
-                                    </Frame>
-                                </Grid>--><!--
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
-                </ContentView>
-            </HorizontalStackLayout>-->
         </Grid>
     </ScrollView>
 </ContentPage>

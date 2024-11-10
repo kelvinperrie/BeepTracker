@@ -14,13 +14,13 @@ namespace BeepTracker.Maui.Model
     {
         public BeepEntry()
         {
-            Value = 0;
+            Value = null;
             Selected = false;
         }
 
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public int value;
+        public int? value;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public bool selected;

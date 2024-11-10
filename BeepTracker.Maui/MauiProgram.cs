@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using BeepTracker.Maui.Services;
+using Microsoft.Extensions.Logging;
 
 namespace BeepTracker.Maui
 {
@@ -25,6 +26,8 @@ namespace BeepTracker.Maui
 
             builder.Services.AddSingleton<BeepEntriesViewModel>();
             builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddSingleton<ModelFactory>();
+            builder.Services.AddSingleton<LocalPersistance>(); 
 
             builder.Services.AddTransient<BeepEntryDetailsViewModel>();
             builder.Services.AddTransient<DetailsPage>();

@@ -57,9 +57,6 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             });
     }
 
-    //[ObservableProperty]
-    //Monkey monkey;
-
     public BeepRecord BeepRecord
     {
         get
@@ -127,9 +124,9 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     //{
     //    try
     //    {
-    //        await map.OpenAsync(Monkey.Latitude, Monkey.Longitude, new MapLaunchOptions
+    //        await map.OpenAsync(beepRecord.Latitude, MobeepRecordnkey.Longitude, new MapLaunchOptions
     //        {
-    //            Name = Monkey.Name,
+    //            Name = beepRecord.BirdName,
     //            NavigationMode = NavigationMode.None
     //        });
     //    }

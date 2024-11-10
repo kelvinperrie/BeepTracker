@@ -18,6 +18,9 @@ namespace BeepTracker.Maui.Model
         public string birdName;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
+        public int beatsPerMinute;
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
         public List<BeepEntry> beepEntries;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
@@ -34,25 +37,7 @@ namespace BeepTracker.Maui.Model
 
         public BeepRecord()
         {
-            if(beepEntries == null)
-            {
-                beepEntries = new List<BeepEntry>();
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-                beepEntries.Add(new BeepEntry() { Value = 0 });
-            }
+
         }
     }
 
