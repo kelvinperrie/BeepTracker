@@ -12,13 +12,16 @@ namespace BeepTracker.Maui.Model
     {
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public DateTime recordedTime;
+        public DateTime recordedDate;
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
+        public TimeSpan recordedTime;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public string birdName;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public int beatsPerMinute;
+        public int? beatsPerMinute;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public List<BeepEntry> beepEntries;
@@ -38,6 +41,39 @@ namespace BeepTracker.Maui.Model
         public BeepRecord()
         {
 
+        }
+
+        public bool ContentEquals(BeepRecord other)
+        {
+            if(other == null) return false;
+            foreach (var prop in typeof(BeepRecord).GetProperties())
+            {
+                if (prop.Name == "BeepEntries")
+                {
+                    if (this.BeepEntries.Count != other.BeepEntries.Count) return false;
+                    for(var i = 0; i < this.BeepEntries.Count; i++)
+                    {
+                        if (BeepEntries[i].Value != other.BeepEntries[i].Value) return false;
+                    }
+                }
+                else
+                {
+                    var value1 = prop.GetValue(this);
+                    var value2 = prop.GetValue(other);
+                    if (value1 == null && value2 != null)
+                    {
+                        return false;
+                    }
+                    else if (value1 == null && value2 == null)
+                    {
+
+                    } else if (!value1.Equals(value2))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 

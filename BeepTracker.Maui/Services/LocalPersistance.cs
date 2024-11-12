@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Maui.Storage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,19 @@ namespace BeepTracker.Maui.Services
                 records.Add(beepRecord);
             }
             return records;
+        }
+
+        public BeepRecord GetBeepRecordByFilename(string fileName)
+        {
+            var filePath = Path.Combine(recordPath, fileName);
+
+            if (!File.Exists(filePath)) return null;
+
+            var contents = File.ReadAllText(filePath);
+            BeepRecord beepRecord = JsonConvert.DeserializeObject<BeepRecord>(contents);
+            beepRecord.Filename = Path.GetFileName(filePath);
+
+            return beepRecord;
         }
 
         public void SaveBeepRecord(BeepRecord beepRecord)

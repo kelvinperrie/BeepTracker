@@ -35,7 +35,7 @@ public partial class BeepEntriesViewModel : BaseViewModel
     {
         await Shell.Current.GoToAsync(nameof(DetailsPage), true, new Dictionary<string, object>
             {
-                {"BeepRecord", modelFactory.CreateBeepRecord() }
+                {"BeepRecordPassed", modelFactory.CreateBeepRecord() }
             });
     }
 
@@ -85,7 +85,7 @@ public partial class BeepEntriesViewModel : BaseViewModel
 
         await Shell.Current.GoToAsync(nameof(DetailsPage), true, new Dictionary<string, object>
         {
-            {"BeepRecord", beepRecord }
+            {"BeepRecordPassed", beepRecord }
         });
     }
 
