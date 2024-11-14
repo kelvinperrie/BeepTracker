@@ -27,7 +27,9 @@ public partial class BeepEntriesViewModel : BaseViewModel
         this.modelFactory = modelFactory;
         this.localPersistance = localPersistance;
 
-        GetBeepRecordsAsync();
+        //Shell.Current.DisplayAlert("Error!", "test", "OK");
+
+        //GetBeepRecordsAsync(); //.Wait();
     }
 
     [RelayCommand]
@@ -40,7 +42,7 @@ public partial class BeepEntriesViewModel : BaseViewModel
     }
 
     [RelayCommand]
-    async Task GetBeepRecordsAsync()
+    public async Task GetBeepRecordsAsync()
     {
         if (IsBusy) return;
 

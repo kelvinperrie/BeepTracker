@@ -25,7 +25,7 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="model:BeepRecord">
                             <Grid Padding="5">
-                                <Frame HeightRequest="80" Style="{StaticResource CardView}">
+                                <Frame HeightRequest="60" Style="{StaticResource CardView}">
                                     <Frame.GestureRecognizers>
                                         <TapGestureRecognizer 
                                             Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:BeepEntriesViewModel}}, Path=GoToBeepDetailsCommand}"
@@ -40,9 +40,9 @@
                                         <VerticalStackLayout
                                             Grid.Column="1"
                                             VerticalOptions="Center"
-                                            Padding="10">
+                                            Padding="10, 0">
                                             <Label Style="{StaticResource LargeLabel}" Text="{Binding BirdName}" />
-                                            <Label Style="{StaticResource MediumLabel}" Text="{Binding RecordedDate}" />
+                                            <Label Style="{StaticResource MediumLabel}" Text="{Binding RecordedDateTime}" />
                                         </VerticalStackLayout>
                                     </Grid>
                                 </Frame>

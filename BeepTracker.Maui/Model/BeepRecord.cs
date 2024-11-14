@@ -38,10 +38,18 @@ namespace BeepTracker.Maui.Model
         [Newtonsoft.Json.JsonIgnore]
         public string filename;
 
+        public DateTime RecordedDateTime { 
+            get
+            {
+                return RecordedDate.Add(RecordedTime);
+            } 
+        }
+
         public BeepRecord()
         {
 
         }
+
 
         public bool ContentEquals(BeepRecord other)
         {
