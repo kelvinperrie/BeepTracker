@@ -21,7 +21,7 @@ namespace BeepTracker.Maui.Services
 
             for (var i = 0; i < beepEntryCount; i++)
             {
-                beepRecord.BeepEntries.Add(new BeepEntry());
+                beepRecord.BeepEntries.Add(new BeepEntry() { Index = i });
             }
 
             return beepRecord;

@@ -42,7 +42,7 @@
                                             VerticalOptions="Center"
                                             Padding="10, 0">
                                             <Label Style="{StaticResource LargeLabel}" Text="{Binding BirdName}" />
-                                            <Label Style="{StaticResource MediumLabel}" Text="{Binding RecordedDateTime}" />
+                                            <Label Style="{StaticResource MediumLabel}" Text="{Binding RecordedDateTime, StringFormat='{0:dd/MM/yy HH:mm:ss}'}" />
                                         </VerticalStackLayout>
                                     </Grid>
                                 </Frame>

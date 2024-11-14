@@ -20,10 +20,16 @@ namespace BeepTracker.Maui.Model
 
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public int? value;
+        public int? value;      // the amount of beeps recorded
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public bool selected;
+        public bool selected;   // indicates if it is the beep entry currently being updated
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
+        public int index;       // which beep in the collection is this
+
+        // indicates this beep entry is the first in a couplet
+        public bool IsFirstItemInCouplet { get { return Index % 2 == 0; } }
     }
 
     public class BeepEntryMetadata

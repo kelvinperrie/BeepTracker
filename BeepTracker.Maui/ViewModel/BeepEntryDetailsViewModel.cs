@@ -8,8 +8,8 @@ namespace BeepTracker.Maui.ViewModel;
 public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyChanged
 {
     //public ObservableCollection<int> Beeps { get; } = new();
-    public RelayCommand Add1Command { get; private set; }
-    public RelayCommand Subtract1Command { get; private set; }
+    //public RelayCommand Add1Command { get; private set; }
+    //public RelayCommand Subtract1Command { get; private set; }
     public RelayCommand EnterNumberCommand { get; private set; }
     public ICommand BeatsPerMinuteClickedCommand { get; private set; }
 
@@ -33,8 +33,10 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
 
         SelectedBeepEntryIndex = 0;
 
-        Add1Command = new RelayCommand(() => BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value++);
-        Subtract1Command = new RelayCommand(() => BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value--);
+        //Add1Command = new RelayCommand(() => 
+        //        BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value++
+        //    );
+        //Subtract1Command = new RelayCommand(() => BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value--);
 
 
         BeatsPerMinuteClickedCommand = new Command<string>(
@@ -55,26 +57,29 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         ClearCommand = new Command(
             execute: () =>
             {
-                //Entry = "0";
-                //RefreshCanExecutes();
+                BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = null;
             });
         DigitCommand = new Command<string>(
             execute: (string arg) =>
             {
                 int converted = int.Parse(arg);
                 BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = converted;
-
-                //Entry += arg;
-                //if (Entry.StartsWith("0") && !Entry.StartsWith("0."))
-                //{
-                //    Entry = Entry.Substring(1);
-                //}
-                //RefreshCanExecutes();
+                HandleBeepEntryChange();
             },
             canExecute: (string arg) =>
             {
                 return true; // !(arg == "." && Entry.Contains("."));
             });
+    }
+
+    public void HandleBeepEntryChange()
+    {
+        // if the first beep entry is changed then update the recorded time
+        if(SelectedBeepEntryIndex == 0)
+        {
+            BeepRecord.RecordedDate = DateTime.Now.Date;
+            BeepRecord.RecordedTime = DateTime.Now.TimeOfDay;
+        }
     }
 
     public BeepRecord BeepRecord
@@ -98,6 +103,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
                     {
                         // this is a new file ... ?
                         beepRecord = value;
+                        beepRecord.BeepEntries[0].Selected = true;
                         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
                         return;
                     }
@@ -122,24 +128,31 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     //[ObservableProperty]
     BeepRecord beepRecord;
 
+
+    [RelayCommand]
+    public void Add1ToCurrentBeepEntry()
+    {
+        if(BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value == null)
+        {
+            BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = 1;
+        } else {
+            BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value++;
+        }
+        HandleBeepEntryChange();
+    }
+
+    [RelayCommand]
+    public void Subtract1FromCurrentBeepEntry()
+    {
+        BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value--;
+        HandleBeepEntryChange();
+    }
+
     [RelayCommand]
     public void SaveBeepRecord()
     {
         localPersistance.SaveBeepRecord(BeepRecord);
 
-        //if (BeepRecord == null) return;
-        //if (BeepRecord.Filename == null)
-        //{
-        //    BeepRecord.Filename = DateTime.Now.ToString("o").Replace(":", "");
-        //}
-
-        //var basePath = FileSystem.Current.AppDataDirectory;
-        //var path = Path.Combine(basePath, "beeprecords");
-        //var filePath = Path.Combine(path, BeepRecord.Filename);
-
-        //var jsonData = JsonConvert.SerializeObject(BeepRecord, Formatting.Indented);
-
-        //File.WriteAllText(filePath, jsonData);
     }
 
     [RelayCommand]
@@ -147,12 +160,29 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     {
 
         // check to see if data has changed
+        if(BeepRecord.Filename == null)
+        {
+            // this has never been saved as a file before
+            bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
+
+            if (answer)
+            {
+                // do navigation without saving data
+                await Shell.Current.GoToAsync("//MainPage", true);
+                return;
+            } else
+            {
+                return;
+            }
+        }
+
+
         var beepRecordFromFile = localPersistance.GetBeepRecordByFilename(BeepRecord.Filename);
 
         if (!BeepRecord.ContentEquals(beepRecordFromFile))
         {
             // there have been changes to the data
-            bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data", "Yes", "No");
+            bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
 
             if (answer)
             {
