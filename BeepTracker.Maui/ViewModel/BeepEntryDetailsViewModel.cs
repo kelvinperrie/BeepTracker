@@ -94,6 +94,13 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             {
                 if (beepRecord == null && value != null)
                 {
+                    if (value.Filename == null)
+                    {
+                        // this is a new file ... ?
+                        beepRecord = value;
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
+                        return;
+                    }
                     // this is a bit mickey mouse, for some reason changes made on the details page are being persisted
                     // on the list page, even when they're not saved. To get around this when the details page loads 
                     // we're going to load the beeprecord from file rather than using the passed through item

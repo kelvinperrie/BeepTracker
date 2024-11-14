@@ -87,7 +87,8 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="model:BeepEntry" >
                         <Label Style="{StaticResource LargeLabel}" Text="{Binding Value}"  
-                               Padding="10" HeightRequest="50" VerticalOptions="Start">
+                               Padding="10" HeightRequest="50" VerticalOptions="Start"
+                               BackgroundColor="LightGrey" Margin="20,20,20,20">
                             <Label.Triggers>
                                 <DataTrigger TargetType="Label" Binding="{Binding Selected}" Value="True">
                                     <Setter Property="BackgroundColor" Value="Yellow"/>
@@ -101,7 +102,7 @@
 
 
             <Grid WidthRequest="240" Grid.Row="4"
-              HeightRequest="70"
+              HeightRequest="0"
               ColumnDefinitions="120, 120"
               RowDefinitions="Auto, Auto"
               ColumnSpacing="2"
@@ -118,7 +119,7 @@
             </Grid>
 
             <Grid WidthRequest="240" Grid.Row="5"
-              HeightRequest="180"
+              HeightRequest="140"
               ColumnDefinitions="80, 80, 80"
               RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
               ColumnSpacing="2"
@@ -174,9 +175,12 @@
 
             <VerticalStackLayout Grid.Row="6" Padding="10" Spacing="10">
 
-                <DatePicker
+                <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
+                <HorizontalStackLayout>
+                    <DatePicker
                     Date="{Binding BeepRecord.RecordedDate}" />
-                <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
+                    <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
+                </HorizontalStackLayout>
                 <Button
                     Margin="8"
                     Command="{Binding SaveBeepRecordCommand}"
