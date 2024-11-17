@@ -5,11 +5,11 @@
              x:Class="BeepTracker.Maui.App">
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Primary">#00BCD4</Color>
+            <Color x:Key="Primary">#7B5132</Color>
             <Color x:Key="PrimaryDark">#FFA000</Color>
             <Color x:Key="Accent">#FFC107</Color>
 
-            <Color x:Key="LightBackground">#FAF9F8</Color>
+            <Color x:Key="LightBackground">#DCD4C7</Color>
             <Color x:Key="DarkBackground">Black</Color>
 
             <Style ApplyToDerivedTypes="True" TargetType="Page">

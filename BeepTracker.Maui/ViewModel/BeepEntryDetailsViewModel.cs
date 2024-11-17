@@ -168,7 +168,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             if (answer)
             {
                 // do navigation without saving data
-                await Shell.Current.GoToAsync("//MainPage", true);
+                await Shell.Current.GoToAsync("MainPage", true);
                 return;
             } else
             {
@@ -189,7 +189,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
                 // do navigation without saving data
                 // overwrite the beep record with the one we just got from the file
                 BeepRecord = beepRecordFromFile;
-                await Shell.Current.GoToAsync("//MainPage", true);
+                await Shell.Current.GoToAsync("MainPage", true);
             } else
             {
                 // save the data? or just let them push the save button???
@@ -197,7 +197,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         } else
         {
             // no changes
-            await Shell.Current.GoToAsync("//MainPage", true);
+            await Shell.Current.GoToAsync("MainPage", true);
         }
     }
 

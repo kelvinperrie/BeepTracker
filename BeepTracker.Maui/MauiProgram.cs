@@ -27,10 +27,12 @@ namespace BeepTracker.Maui
             builder.Services.AddSingleton<BeepEntriesViewModel>();
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<ModelFactory>();
-            builder.Services.AddSingleton<LocalPersistance>(); 
+            builder.Services.AddSingleton<LocalPersistance>();
 
             builder.Services.AddTransient<BeepEntryDetailsViewModel>();
+            builder.Services.AddTransient<StartPageViewModel>();
             builder.Services.AddTransient<DetailsPage>();
+            builder.Services.AddTransient<StartPage>();
 
             return builder.Build();
         }

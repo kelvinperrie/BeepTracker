@@ -29,7 +29,7 @@ public partial class BeepEntriesViewModel : BaseViewModel
 
         //Shell.Current.DisplayAlert("Error!", "test", "OK");
 
-        //GetBeepRecordsAsync(); //.Wait();
+        GetBeepRecordsAsync(); //.Wait();
     }
 
     [RelayCommand]
