@@ -41,7 +41,7 @@ namespace BeepTracker.Maui.Model
         public DateTime RecordedDateTime { 
             get
             {
-                return RecordedDate.Add(RecordedTime);
+                return RecordedDate.Date.Add(RecordedTime);
             } 
         }
 

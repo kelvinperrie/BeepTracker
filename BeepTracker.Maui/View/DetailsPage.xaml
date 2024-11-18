@@ -193,7 +193,7 @@
 
                 <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
                 <HorizontalStackLayout>
-                    <DatePicker
+                    <DatePicker  Format="dd/MM/yyyy"
                     Date="{Binding BeepRecord.RecordedDate}" />
                     <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
                 </HorizontalStackLayout>

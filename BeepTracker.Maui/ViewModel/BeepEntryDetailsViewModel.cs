@@ -90,36 +90,11 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         }
         set
         {
-            //if(beepRecord == null && value !=null)
-            //{
-            //    // this is being set as it is passed into the page, so default the first beep to being selected
-            //    value.BeepEntries[0].Selected = true;
-            //}
             if (beepRecord != value)
             {
-                if (beepRecord == null && value != null)
-                {
-                    if (value.Filename == null)
-                    {
-                        // this is a new file ... ?
-                        beepRecord = value;
-                        beepRecord.BeepEntries[0].Selected = true;
-                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
-                        return;
-                    }
-                    // this is a bit mickey mouse, for some reason changes made on the details page are being persisted
-                    // on the list page, even when they're not saved. To get around this when the details page loads 
-                    // we're going to load the beeprecord from file rather than using the passed through item
-                    // todo I should figure out why it is doing this
-                    var recordFromFile = localPersistance.GetBeepRecordByFilename(value.Filename);
-                    beepRecord = recordFromFile;
-                    // this is being set as it is passed into the page, so default the first beep to being selected
-                    beepRecord.BeepEntries[0].Selected = true;
-                }
-                else
-                {
-                    beepRecord = value;
-                }
+                beepRecord = value;
+                // mark the first beep entry as being the selected one
+                beepRecord.BeepEntries[0].Selected = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
             }
         }
@@ -152,7 +127,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     public void SaveBeepRecord()
     {
         localPersistance.SaveBeepRecord(BeepRecord);
-
+        Shell.Current.DisplayAlert("Save completed", "The beep record has been saved.", "OK");
     }
 
     [RelayCommand]
@@ -160,6 +135,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     {
 
         // check to see if data has changed
+
         if(BeepRecord.Filename == null)
         {
             // this has never been saved as a file before
@@ -189,6 +165,10 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
                 // do navigation without saving data
                 // overwrite the beep record with the one we just got from the file
                 BeepRecord = beepRecordFromFile;
+                // I don't know why this doesn't work ...
+                // when you return to the list it keeps the changed version of the record
+                // for now tell the user to refresh there list, should figure this out one day
+                await Shell.Current.DisplayAlert("Refresh needed", "When you return to the beep record list make sure you refresh it to reload records from file.", "OK");
                 await Shell.Current.GoToAsync("MainPage", true);
             } else
             {
