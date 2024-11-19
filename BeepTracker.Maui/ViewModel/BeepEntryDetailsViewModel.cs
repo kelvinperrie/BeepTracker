@@ -94,6 +94,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             {
                 beepRecord = value;
                 // mark the first beep entry as being the selected one
+                beepRecord.BeepEntries.ForEach(be => be.Selected = false);  // this is needed for when a records is updated and then reopened from list page
                 beepRecord.BeepEntries[0].Selected = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
             }
