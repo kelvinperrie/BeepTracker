@@ -57,6 +57,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\Icons\check.svg" />
+	  <None Remove="Resources\Images\Icons\check_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
+	  <None Remove="Resources\Images\Icons\delete_forever.svg" />
+	  <None Remove="Resources\Images\Icons\delete_forever_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
+	  <None Remove="Resources\Images\Icons\headphones.svg" />
+	  <None Remove="Resources\Images\Icons\headphones_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
+	  <None Remove="Resources\Images\Icons\help.svg" />
+	  <None Remove="Resources\Images\Icons\help_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
+	  <None Remove="Resources\Images\Icons\home.svg" />
+	  <None Remove="Resources\Images\Icons\home_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
+	  <None Remove="Resources\Images\Icons\info.svg" />
+	  <None Remove="Resources\Images\Icons\info_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
 	  <None Remove="Resources\Splash\kiwicanssplash.png" />
 	</ItemGroup>
 
@@ -70,6 +82,15 @@
 
 	<ItemGroup>
 	  <Folder Include="Model\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiImage Include="Resources\Images\Icons\check.svg" />
+	  <MauiImage Include="Resources\Images\Icons\delete_forever.svg" />
+	  <MauiImage Include="Resources\Images\Icons\headphones.svg" />
+	  <MauiImage Include="Resources\Images\Icons\help.svg" />
+	  <MauiImage Include="Resources\Images\Icons\home.svg" />
+	  <MauiImage Include="Resources\Images\Icons\info.svg" />
 	</ItemGroup>
 
 	<ItemGroup>

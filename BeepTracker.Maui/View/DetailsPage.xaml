@@ -135,7 +135,7 @@
             </Grid>
 
             <Grid WidthRequest="240" Grid.Row="5"
-              HeightRequest="140"
+              HeightRequest="160"
               ColumnDefinitions="80, 80, 80"
               RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
               ColumnSpacing="2"
