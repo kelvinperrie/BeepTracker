@@ -37,7 +37,7 @@
     </FlyoutItem>
     <FlyoutItem Title="Application info" Icon="info.png">
         <Tab>
-            <ShellContent ContentTemplate="{DataTemplate view:MainPage}" />
+            <ShellContent ContentTemplate="{DataTemplate view:InfoPage}" />
         </Tab>
     </FlyoutItem>
 </Shell>

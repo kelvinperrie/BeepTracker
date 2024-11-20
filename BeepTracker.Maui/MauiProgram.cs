@@ -33,6 +33,7 @@ namespace BeepTracker.Maui
             builder.Services.AddTransient<StartPageViewModel>();
             builder.Services.AddTransient<DetailsPage>();
             builder.Services.AddTransient<StartPage>();
+            builder.Services.AddTransient<InfoPage>();
 
             return builder.Build();
         }
