@@ -16,7 +16,8 @@ namespace BeepTracker.Maui.Services
             {
                 BeepEntries = [],
                 RecordedDate = DateTime.Now,
-                RecordedTime = DateTime.Now.TimeOfDay
+                RecordedTime = DateTime.Now.TimeOfDay,
+                Status = (int)BeepRecordStatus.Created
             };
 
             for (var i = 0; i < beepEntryCount; i++)

@@ -3,6 +3,7 @@ global using CommunityToolkit.Mvvm.Input;
 global using BeepTracker.Maui.Model;
 global using BeepTracker.Maui.View;
 global using BeepTracker.Maui.ViewModel;
+global using BeepTracker.Maui.Lookups;
 global using System.Collections.ObjectModel;
 global using System.ComponentModel;
 global using System.Diagnostics;

@@ -12,6 +12,8 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     //public RelayCommand Subtract1Command { get; private set; }
     public RelayCommand EnterNumberCommand { get; private set; }
     public ICommand BeatsPerMinuteClickedCommand { get; private set; }
+    public ICommand BeepRecordStatusClickedCommand { get; private set; }
+    
 
     public ICommand ClearCommand { private set; get; }
     public ICommand BackspaceCommand { private set; get; }
@@ -79,6 +81,13 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         //    );
         //Subtract1Command = new RelayCommand(() => BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value--);
 
+        BeepRecordStatusClickedCommand = new Command<string>(
+            execute: (string arg) =>
+            {
+                int converted = int.Parse(arg);
+                BeepRecord.Status = converted;
+            },
+            canExecute: (string arg) => { return true; });
 
         BeatsPerMinuteClickedCommand = new Command<string>(
             execute: (string arg) =>

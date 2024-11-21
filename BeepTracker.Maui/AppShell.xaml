@@ -25,11 +25,26 @@
         </ResourceDictionary>
     </Shell.Resources>
     
-    <ShellContent
-        Title="Home" Icon="home.png"
+    <!--<ShellContent
+        Title="Reload?" Icon="home.png"
         ContentTemplate="{DataTemplate view:StartPage}"
-        Route="StartPage" />
+        Route="StartPage" />-->
 
+    <ShellContent Title="Home"
+                  Icon="home.png"
+                  ContentTemplate="{DataTemplate view:StartPage}" />
+    <ShellContent Title="Beep records"
+                  Icon="headphones.png"
+                  ContentTemplate="{DataTemplate view:MainPage}" />
+    <ShellContent Title="Application info"
+                  Icon="info.png"
+                  ContentTemplate="{DataTemplate view:InfoPage}" />
+
+    <!--<FlyoutItem Title="Start page" Icon="home.png">
+        <Tab>
+            <ShellContent ContentTemplate="{DataTemplate view:StartPage}" />
+        </Tab>
+    </FlyoutItem>
     <FlyoutItem Title="Beep records" Icon="headphones.png">
         <Tab>
             <ShellContent ContentTemplate="{DataTemplate view:MainPage}" />
@@ -39,5 +54,5 @@
         <Tab>
             <ShellContent ContentTemplate="{DataTemplate view:InfoPage}" />
         </Tab>
-    </FlyoutItem>
+    </FlyoutItem>-->
 </Shell>

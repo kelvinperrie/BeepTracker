@@ -34,7 +34,7 @@
             
             <HorizontalStackLayout Spacing="10" Margin="0,4,0,4">
                 <Label Style="{StaticResource MediumLabel}" Text="Beats per minute:" />
-                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1" BackgroundColor="#fff">
                     <Label Style="{StaticResource MediumLabel}" Text="30" >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="30"/>
@@ -47,7 +47,7 @@
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
-                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1" BackgroundColor="#fff">
                     <Label Style="{StaticResource MediumLabel}" Text="48" >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="48"/>
@@ -60,7 +60,7 @@
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
-                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1" BackgroundColor="#fff">
                     <Label Style="{StaticResource MediumLabel}" Text="80" >
                         <Label.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="80"/>
@@ -201,7 +201,7 @@
                     WidthRequest="100"
                     Text="{Binding BeepRecord.Longitude}" />
                 <Button
-                    Margin="0,4"
+                    Margin="4,0"
                     Command="{Binding UpdateLatLongCommand}"
                     Text="Get" >
                     <Button.Triggers>
@@ -218,7 +218,35 @@
                 <ActivityIndicator IsRunning="{Binding IsCheckingLocation}" />
             </HorizontalStackLayout>
 
-
+            <HorizontalStackLayout Spacing="10" Margin="0,4,0,4">
+                <Label Style="{StaticResource MediumLabel}" Text="Status:" HorizontalOptions="Center" />
+                <Border Stroke="#fff" StrokeThickness="2" BackgroundColor="#fff" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="Created" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeepRecordStatusClickedCommand}" CommandParameter="1"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.Status}" Value="1">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+                <Border Stroke="#fff" StrokeThickness="2" BackgroundColor="#fff" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="Uploaded" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeepRecordStatusClickedCommand}" CommandParameter="2"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.Status}" Value="2">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                            <Setter Property="StrokeThickness" Value="2" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+            </HorizontalStackLayout>
+            
 
             <Button
                 Margin="0,4"

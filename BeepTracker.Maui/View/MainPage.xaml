@@ -32,13 +32,22 @@
                                             CommandParameter="{Binding .}"/>
                                     </Frame.GestureRecognizers>
                                     <Grid Padding="0" ColumnDefinitions="*">
-                                        <!--<Image
+                                        <Image
                                             Aspect="AspectFill"
-                                            HeightRequest="125"
-                                            Source="{Binding Image}"
-                                            WidthRequest="125" />-->
+                                            HeightRequest="24"
+                                            Source="check.png"
+                                            WidthRequest="24" 
+                                            HorizontalOptions="End"
+                                            IsVisible="False"
+                                            Margin="0,0,15,0">
+                                            <Image.Triggers>
+                                                <DataTrigger TargetType="Image" Binding="{Binding Status}" Value="2">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Image.Triggers>
+                                        </Image>
                                         <VerticalStackLayout
-                                            Grid.Column="1"
+                                            Grid.Column="0"
                                             VerticalOptions="Center"
                                             Padding="10, 0">
                                             <Label Style="{StaticResource LargeLabel}" Text="{Binding BirdName}" />
