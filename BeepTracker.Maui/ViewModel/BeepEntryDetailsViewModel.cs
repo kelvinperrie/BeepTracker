@@ -24,6 +24,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
 
 
     public int SelectedBeepEntryIndex;
+    public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;
 
     IMap map;
     public BeepEntryDetailsViewModel(IMap map, LocalPersistance localPersistance)
@@ -62,8 +63,17 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         DigitCommand = new Command<string>(
             execute: (string arg) =>
             {
+                // if the user has just gone into this beep entry and hit a number key, then we want to overwrite the
+                // contents of the beep entry
+                // if they have hit multiple number keys then we want to add them to the beep entry
+                if (UserHasEnteredDigitIntoSelectedBeepEntry)
+                {
+                    arg = BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value.ToString() + arg;
+
+                }
                 int converted = int.Parse(arg);
                 BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = converted;
+                UserHasEnteredDigitIntoSelectedBeepEntry = true;
                 HandleBeepEntryChange();
             },
             canExecute: (string arg) =>
@@ -189,6 +199,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = false;
         SelectedBeepEntryIndex++;
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = true;
+        UserHasEnteredDigitIntoSelectedBeepEntry = false;
     }
     [RelayCommand]
     public void PreviousBeepEntry()
@@ -197,6 +208,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = false;
         SelectedBeepEntryIndex--;
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = true;
+        UserHasEnteredDigitIntoSelectedBeepEntry = false;
     }
 
     //[RelayCommand]
