@@ -27,6 +27,46 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;
 
     IMap map;
+
+    private CancellationTokenSource _cancelTokenSource; // cancellation tocken for the request to the device to look up the location
+    public bool isCheckingLocation;     // tracks whether we are currently looking up the location
+
+    public bool IsCheckingLocation
+    {
+        get
+        {
+            return isCheckingLocation;
+        }
+        set
+        {
+            if (isCheckingLocation != value)
+            {
+                isCheckingLocation = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsCheckingLocation"));
+            }
+        }
+    }
+
+    BeepRecord beepRecord;
+    public BeepRecord BeepRecord
+    {
+        get
+        {
+            return beepRecord;
+        }
+        set
+        {
+            if (beepRecord != value)
+            {
+                beepRecord = value;
+                // mark the first beep entry as being the selected one
+                beepRecord.BeepEntries.ForEach(be => be.Selected = false);  // this is needed for when a records is updated and then reopened from list page
+                beepRecord.BeepEntries[0].Selected = true;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
+            }
+        }
+    }
+
     public BeepEntryDetailsViewModel(IMap map, LocalPersistance localPersistance)
     {
         this.map = map;
@@ -91,28 +131,6 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             BeepRecord.RecordedTime = DateTime.Now.TimeOfDay;
         }
     }
-
-    public BeepRecord BeepRecord
-    {
-        get
-        {
-            return beepRecord;
-        }
-        set
-        {
-            if (beepRecord != value)
-            {
-                beepRecord = value;
-                // mark the first beep entry as being the selected one
-                beepRecord.BeepEntries.ForEach(be => be.Selected = false);  // this is needed for when a records is updated and then reopened from list page
-                beepRecord.BeepEntries[0].Selected = true;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
-            }
-        }
-    }
-
-    //[ObservableProperty]
-    BeepRecord beepRecord;
 
 
     [RelayCommand]
@@ -214,46 +232,10 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     [RelayCommand]
     public void UpdateLatLong()
     {
+        // we call this async and don't wait for a response so that we don't lock up the UI
         GetCurrentLocation();
     }
 
-    //[RelayCommand]
-    //async Task OpenMap()
-    //{
-    //    try
-    //    {
-    //        await map.OpenAsync(beepRecord.Latitude, MobeepRecordnkey.Longitude, new MapLaunchOptions
-    //        {
-    //            Name = beepRecord.BirdName,
-    //            NavigationMode = NavigationMode.None
-    //        });
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debug.WriteLine($"Unable to launch maps: {ex.Message}");
-    //        await Shell.Current.DisplayAlert("Error, no Maps app!", ex.Message, "OK");
-    //    }
-    //}
-
-    private CancellationTokenSource _cancelTokenSource;
-    //[ObservableProperty]
-    public bool isCheckingLocation;
-
-    public bool IsCheckingLocation
-    {
-        get
-        {
-            return isCheckingLocation;
-        }
-        set
-        {
-            if (isCheckingLocation != value)
-            {
-                isCheckingLocation = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsCheckingLocation"));
-            }
-        }
-    }
 
     public async Task GetCurrentLocation()
     {
@@ -286,7 +268,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         //   PermissionException
         catch (Exception ex)
         {
-            // Unable to get location
+            await Shell.Current.DisplayAlert("Problem while getting location", $"We had an error: {ex.Message}", "OK");
         }
         finally
         {
