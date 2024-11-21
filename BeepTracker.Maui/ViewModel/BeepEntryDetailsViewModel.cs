@@ -1,4 +1,5 @@
 ﻿using BeepTracker.Maui.Services;
+using Microsoft.Maui.Controls;
 using Newtonsoft.Json;
 using System.Windows.Input;
 
@@ -7,32 +8,31 @@ namespace BeepTracker.Maui.ViewModel;
 [QueryProperty(nameof(BeepRecord), "BeepRecordPassed")]
 public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyChanged
 {
-    //public ObservableCollection<int> Beeps { get; } = new();
-    //public RelayCommand Add1Command { get; private set; }
-    //public RelayCommand Subtract1Command { get; private set; }
+    // during page setup a reference of the page is passed to the viewmodel and stored here
+    // this lets us reference controls on the page to do things like scroll to certain elements
+    // ... there is probably a better way to do this, but I winged it
+    public DetailsPage MyPage { get; set; }             
+
+
     public RelayCommand EnterNumberCommand { get; private set; }
     public ICommand BeatsPerMinuteClickedCommand { get; private set; }
     public ICommand BeepRecordStatusClickedCommand { get; private set; }
-    
-
     public ICommand ClearCommand { private set; get; }
     public ICommand BackspaceCommand { private set; get; }
     public ICommand DigitCommand { private set; get; }
 
 
-    LocalPersistance localPersistance;
+    private readonly LocalPersistance localPersistance;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
 
-    public int SelectedBeepEntryIndex;
-    public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;
-
-    IMap map;
+    public int SelectedBeepEntryIndex;      // tracks which of the beep entries is currently selected
+    public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;   // tracks if the user has entered a digit into an entry after entering the field
 
     private CancellationTokenSource _cancelTokenSource; // cancellation tocken for the request to the device to look up the location
+    
     public bool isCheckingLocation;     // tracks whether we are currently looking up the location
-
     public bool IsCheckingLocation
     {
         get
@@ -69,17 +69,11 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         }
     }
 
-    public BeepEntryDetailsViewModel(IMap map, LocalPersistance localPersistance)
+    public BeepEntryDetailsViewModel( LocalPersistance localPersistance)
     {
-        this.map = map;
         this.localPersistance = localPersistance;
 
-        SelectedBeepEntryIndex = 0;
-
-        //Add1Command = new RelayCommand(() => 
-        //        BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value++
-        //    );
-        //Subtract1Command = new RelayCommand(() => BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value--);
+        SelectedBeepEntryIndex = 0;     // default to the first entry being selected on page load
 
         BeepRecordStatusClickedCommand = new Command<string>(
             execute: (string arg) =>
@@ -140,7 +134,6 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             BeepRecord.RecordedTime = DateTime.Now.TimeOfDay;
         }
     }
-
 
     [RelayCommand]
     public void Add1ToCurrentBeepEntry()
@@ -227,7 +220,10 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         SelectedBeepEntryIndex++;
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = true;
         UserHasEnteredDigitIntoSelectedBeepEntry = false;
+        // scroll horizontally so that the beep entries are always in view
+        MyPage.ScrollToBeepEntry(beepRecord.BeepEntries[SelectedBeepEntryIndex]);
     }
+
     [RelayCommand]
     public void PreviousBeepEntry()
     {
@@ -236,6 +232,8 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         SelectedBeepEntryIndex--;
         beepRecord.BeepEntries[SelectedBeepEntryIndex].Selected = true;
         UserHasEnteredDigitIntoSelectedBeepEntry = false;
+        // scroll horizontally so that the beep entries are always in view
+        MyPage.ScrollToBeepEntry(beepRecord.BeepEntries[SelectedBeepEntryIndex]);
     }
 
     [RelayCommand]
@@ -244,7 +242,6 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         // we call this async and don't wait for a response so that we don't lock up the UI
         GetCurrentLocation();
     }
-
 
     public async Task GetCurrentLocation()
     {

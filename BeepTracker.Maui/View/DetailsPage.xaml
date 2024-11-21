@@ -43,7 +43,6 @@
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="30">
                             <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                            <Setter Property="StrokeThickness" Value="2" />
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
@@ -56,7 +55,6 @@
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="48">
                             <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                            <Setter Property="StrokeThickness" Value="2" />
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
@@ -69,14 +67,14 @@
                     <Border.Triggers>
                         <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="80">
                             <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                            <Setter Property="StrokeThickness" Value="2" />
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
             </HorizontalStackLayout>
 
             <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" 
-                            HeightRequest="60" Margin="0" VerticalOptions="Start">
+                            HeightRequest="60" Margin="0" VerticalOptions="Start"
+                            x:Name="beepEntriesCollectionView">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
                 </CollectionView.ItemsLayout>
