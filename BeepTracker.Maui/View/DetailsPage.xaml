@@ -8,8 +8,8 @@
     Title="Beep record details"
     x:DataType="viewmodel:BeepEntryDetailsViewModel">
     <ScrollView>
-        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-            <BoxView
+        <VerticalStackLayout Padding="10">
+            <!--<BoxView
                 BackgroundColor="{StaticResource Primary}"
                 Grid.RowSpan="2"
                 HorizontalOptions="Fill"
@@ -21,65 +21,61 @@
                    FontAttributes="Bold"
                    Text="{Binding BeepRecord.BirdName}" 
                    HorizontalOptions="Center"
-                   Margin="0,0,0,8"/>
+                   Margin="0,0,0,8"/>-->
 
-            <VerticalStackLayout Grid.Row="2" Padding="10" Spacing="10">
-                <Label Style="{StaticResource MediumLabel}" Text="Bird:" />
-                <Entry 
-                    MaxLength="50"
-                    Text="{Binding BeepRecord.BirdName}" />
-                <Label Style="{StaticResource MediumLabel}" Text="Notes:" />
-                <Entry 
-                    MaxLength="500"
-                    Text="{Binding BeepRecord.Notes}" />
-                <!--<Label Style="{StaticResource MediumLabel}" Text="Beats per minute:" />
-                <Entry 
-                    Text="{Binding BeepRecord.BeatsPerMinute}" />-->
-                <HorizontalStackLayout Padding="0" Spacing="10">
-                    <Label Style="{StaticResource MediumLabel}" Text="Beats per minute:" />
-                    <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
-                        <Label Style="{StaticResource MediumLabel}" Text="30" >
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="30"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="30">
-                                <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                                <Setter Property="StrokeThickness" Value="2" />
-                            </DataTrigger>
-                        </Border.Triggers>
-                    </Border>
-                    <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
-                        <Label Style="{StaticResource MediumLabel}" Text="48" >
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="48"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="48">
-                                <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                                <Setter Property="StrokeThickness" Value="2" />
-                            </DataTrigger>
-                        </Border.Triggers>
-                    </Border>
-                    <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
-                        <Label Style="{StaticResource MediumLabel}" Text="80" >
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="80"/>
-                            </Label.GestureRecognizers>
-                        </Label>
-                        <Border.Triggers>
-                            <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="80">
-                                <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                                <Setter Property="StrokeThickness" Value="2" />
-                            </DataTrigger>
-                        </Border.Triggers>
-                    </Border>
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+            <Label Style="{StaticResource MediumLabel}" Text="Bird:" />
+            <Entry 
+                MaxLength="50"
+                Text="{Binding BeepRecord.BirdName}" />
+            <Label Style="{StaticResource MediumLabel}" Text="Notes:" />
+            <Entry 
+                MaxLength="500"
+                Text="{Binding BeepRecord.Notes}" />
+            
+            <HorizontalStackLayout Spacing="10" Margin="0,4,0,4">
+                <Label Style="{StaticResource MediumLabel}" Text="Beats per minute:" />
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="30" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="30"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="30">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                            <Setter Property="StrokeThickness" Value="2" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="48" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="48"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="48">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                            <Setter Property="StrokeThickness" Value="2" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+                <Border Stroke="#fff" StrokeThickness="2" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="80" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeatsPerMinuteClickedCommand}" CommandParameter="80"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.BeatsPerMinute}" Value="80">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                            <Setter Property="StrokeThickness" Value="2" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+            </HorizontalStackLayout>
 
-            <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" Grid.Row="3" 
+            <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" 
                             HeightRequest="60" Margin="0" VerticalOptions="Start">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Horizontal" />
@@ -117,7 +113,7 @@
 
 
 
-            <Grid WidthRequest="240" Grid.Row="4"
+            <Grid WidthRequest="240"
               HeightRequest="75"
               ColumnDefinitions="120, 120"
               RowDefinitions="Auto, Auto"
@@ -134,7 +130,7 @@
                     Command="{Binding NextBeepEntryCommand}" />
             </Grid>
 
-            <Grid WidthRequest="240" Grid.Row="5"
+            <Grid WidthRequest="240" 
               HeightRequest="160"
               ColumnDefinitions="80, 80, 80"
               RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
@@ -185,31 +181,57 @@
                 <Button Text="CLEAR"
                     Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
                     Command="{Binding ClearCommand}" />
-                <!--<Button Text="Save record" Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="3"
-                    Command="{Binding SaveBeepRecordCommand}" />-->
             </Grid>
 
-            <VerticalStackLayout Grid.Row="6" Padding="10" Spacing="10">
 
-                <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
-                <HorizontalStackLayout>
-                    <DatePicker  Format="dd/MM/yyyy"
-                    Date="{Binding BeepRecord.RecordedDate}" />
-                    <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
-                </HorizontalStackLayout>
-                <Button
-                    Margin="8"
-                    Command="{Binding SaveBeepRecordCommand}"
-                    IsEnabled="{Binding IsNotBusy}"
-                    Style="{StaticResource ButtonOutline}"
-                    Text="Save record" />
-                <Button
-                    Margin="8,0"
-                    Command="{Binding GoToBeepEntriesPageCommand}"
-                    Style="{StaticResource ButtonOutline}"
-                    Text="Go to list" />
+            <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
+            <HorizontalStackLayout>
+                <DatePicker  Format="dd/MM/yyyy"
+                Date="{Binding BeepRecord.RecordedDate}" />
+                <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
+            </HorizontalStackLayout>
 
-            </VerticalStackLayout>
-        </Grid>
+
+            <Label Style="{StaticResource MediumLabel}" Text="Lat/Lng:" />
+            <HorizontalStackLayout>
+                <Entry 
+                    WidthRequest="100"
+                    Text="{Binding BeepRecord.Latitude}" />
+                <Entry 
+                    WidthRequest="100"
+                    Text="{Binding BeepRecord.Longitude}" />
+                <Button
+                    Margin="0,4"
+                    Command="{Binding UpdateLatLongCommand}"
+                    Text="Get" >
+                    <Button.Triggers>
+
+                        <DataTrigger TargetType="Button"
+                            Binding="{Binding IsCheckingLocation}"
+                            Value="true">
+                            <Setter Property="IsVisible"
+                            Value="False" />
+                        </DataTrigger>
+
+                    </Button.Triggers>
+                </Button>
+                <ActivityIndicator IsRunning="{Binding IsCheckingLocation}" />
+            </HorizontalStackLayout>
+
+
+
+            <Button
+                Margin="0,4"
+                Command="{Binding SaveBeepRecordCommand}"
+                IsEnabled="{Binding IsNotBusy}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Save record" />
+            <Button
+                Margin="0,4"
+                Command="{Binding GoToBeepEntriesPageCommand}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Go to list" />
+
+        </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

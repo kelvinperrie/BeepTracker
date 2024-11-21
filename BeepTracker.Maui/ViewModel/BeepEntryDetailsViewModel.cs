@@ -211,6 +211,12 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         UserHasEnteredDigitIntoSelectedBeepEntry = false;
     }
 
+    [RelayCommand]
+    public void UpdateLatLong()
+    {
+        GetCurrentLocation();
+    }
+
     //[RelayCommand]
     //async Task OpenMap()
     //{
@@ -228,4 +234,64 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     //        await Shell.Current.DisplayAlert("Error, no Maps app!", ex.Message, "OK");
     //    }
     //}
+
+    private CancellationTokenSource _cancelTokenSource;
+    //[ObservableProperty]
+    public bool isCheckingLocation;
+
+    public bool IsCheckingLocation
+    {
+        get
+        {
+            return isCheckingLocation;
+        }
+        set
+        {
+            if (isCheckingLocation != value)
+            {
+                isCheckingLocation = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsCheckingLocation"));
+            }
+        }
+    }
+
+    public async Task GetCurrentLocation()
+    {
+        try
+        {
+            if (IsCheckingLocation)
+            {
+                await Shell.Current.DisplayAlert("Already looking!", "We've already requested the location from the device and are waiting for an answer.", "OK");
+            }
+
+            IsCheckingLocation = true;
+
+            GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+            _cancelTokenSource = new CancellationTokenSource();
+
+            Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+
+            if (location != null)
+            {
+                Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                BeepRecord.Latitude = location.Latitude.ToString();
+                BeepRecord.Longitude = location.Longitude.ToString();
+
+            }
+        }
+        // Catch one of the following exceptions:
+        //   FeatureNotSupportedException
+        //   FeatureNotEnabledException
+        //   PermissionException
+        catch (Exception ex)
+        {
+            // Unable to get location
+        }
+        finally
+        {
+            IsCheckingLocation = false;
+        }
+    }
+
 }
