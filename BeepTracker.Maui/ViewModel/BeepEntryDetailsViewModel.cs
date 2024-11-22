@@ -282,4 +282,27 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         }
     }
 
+    [RelayCommand]
+    public async Task DeleteBeepRecord()
+    {
+        try
+        {
+            bool answer = await Shell.Current.DisplayAlert("Delete Record?", "Are you sure you want to delete this record, there is no way to undo this?", "Yes", "No");
+
+            if (answer)
+            {
+                localPersistance.DeleteBeepRecord(BeepRecord);
+                await Shell.Current.DisplayAlert("Record Deleted", $"This record has been deleted, when you return to the list view remember to refresh it.", "OK");
+                await Shell.Current.GoToAsync("MainPage", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            await Shell.Current.DisplayAlert("Problem while deleting the beep record", $"We had an error: {ex.Message}", "OK");
+        }
+        finally
+        {
+        }
+    }
+
 }

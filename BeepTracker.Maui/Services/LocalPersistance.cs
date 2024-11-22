@@ -64,5 +64,18 @@ namespace BeepTracker.Maui.Services
 
             File.WriteAllText(filePath, jsonData);
         }
+
+        public void DeleteBeepRecord(BeepRecord beepRecord)
+        {
+            if (beepRecord == null) return;
+            if (beepRecord.Filename == null)
+            {
+                throw new Exception("Beep record has no filename, which indicates it has never been saved (so there is nothing to delete)");
+            }
+
+            var filePath = Path.Combine(recordPath, beepRecord.Filename);
+            File.Delete(filePath);
+
+        }
     }
 }

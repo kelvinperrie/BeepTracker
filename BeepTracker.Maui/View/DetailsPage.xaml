@@ -9,19 +9,6 @@
     x:DataType="viewmodel:BeepEntryDetailsViewModel">
     <ScrollView>
         <VerticalStackLayout Padding="10">
-            <!--<BoxView
-                BackgroundColor="{StaticResource Primary}"
-                Grid.RowSpan="2"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill"/>
-
-            <Label Style="{StaticResource LargeLabel}" 
-                   Grid.Row="1"
-                   TextColor="White"
-                   FontAttributes="Bold"
-                   Text="{Binding BeepRecord.BirdName}" 
-                   HorizontalOptions="Center"
-                   Margin="0,0,0,8"/>-->
 
             <Label Style="{StaticResource MediumLabel}" Text="Bird:" />
             <Entry 
@@ -108,7 +95,6 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
 
 
             <Grid WidthRequest="240"
@@ -243,6 +229,22 @@
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
+                <Button
+                    Margin="10,0"
+                    Command="{Binding DeleteBeepRecordCommand}"
+                    Text="Delete"
+                    HorizontalOptions="End" >
+                    <Button.Triggers>
+
+                        <DataTrigger TargetType="Button"
+                            Binding="{Binding BeepRecord.Filename}"
+                            Value="null">
+                            <Setter Property="IsVisible"
+                            Value="False" />
+                        </DataTrigger>
+
+                    </Button.Triggers>
+                </Button>
             </HorizontalStackLayout>
             
 
