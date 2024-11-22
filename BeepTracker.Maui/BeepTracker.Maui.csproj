@@ -38,9 +38,48 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
+	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\kiwicanssplash.png" color="#DCD4C7" BaseSize="250,250" />
@@ -57,6 +96,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\AppIcon\kiwicans250x.png" />
 	  <None Remove="Resources\Images\Icons\check.svg" />
 	  <None Remove="Resources\Images\Icons\check_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" />
 	  <None Remove="Resources\Images\Icons\delete_forever.svg" />
@@ -82,6 +122,10 @@
 
 	<ItemGroup>
 	  <Folder Include="Model\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiIcon Include="Resources\AppIcon\kiwicans250x.png" />
 	</ItemGroup>
 
 	<ItemGroup>
