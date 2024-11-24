@@ -229,22 +229,23 @@
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
-                <Button
+                <ImageButton Source="delete_forever.png"
                     Margin="10,0"
                     Command="{Binding DeleteBeepRecordCommand}"
-                    Text="Delete"
-                    HorizontalOptions="End" >
-                    <Button.Triggers>
+                    HorizontalOptions="End" 
+                    HeightRequest="32"
+                    WidthRequest="32">
+                    <ImageButton.Triggers>
 
-                        <DataTrigger TargetType="Button"
+                        <DataTrigger TargetType="ImageButton"
                             Binding="{Binding BeepRecord.Filename}"
                             Value="null">
                             <Setter Property="IsVisible"
                             Value="False" />
                         </DataTrigger>
 
-                    </Button.Triggers>
-                </Button>
+                    </ImageButton.Triggers>
+                </ImageButton>
             </HorizontalStackLayout>
             
 

@@ -287,7 +287,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     {
         try
         {
-            bool answer = await Shell.Current.DisplayAlert("Delete Record?", "Are you sure you want to delete this record, there is no way to undo this?", "Yes", "No");
+            bool answer = await Shell.Current.DisplayAlert("Delete Record?", "Are you sure you want to delete this record? There is no way to undo this.", "Yes", "No");
 
             if (answer)
             {
