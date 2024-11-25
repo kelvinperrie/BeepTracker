@@ -5,7 +5,7 @@
              x:Class="BeepTracker.Maui.App">
     <Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="Primary">#7B5132</Color>
+            <Color x:Key="Primary">#02AAB5</Color>
             <Color x:Key="PrimaryDark">#FFA000</Color>
             <Color x:Key="Accent">#FFC107</Color>
 

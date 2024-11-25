@@ -7,7 +7,7 @@
              Title="Beep Tracker"
             x:DataType="viewmodel:StartPageViewModel">
     <Grid RowDefinitions="*,auto" >
-        <Image Source="kiwicans500x.png" Aspect="Center" />
+        <Image Source="kiwicans500x.png" HorizontalOptions="Fill" MaximumWidthRequest="250"  />
         <Button
             Grid.Row="1"
             Grid.Column="0"
