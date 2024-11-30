@@ -32,13 +32,16 @@
 
     <ShellContent Title="Home"
                   Icon="home.png"
-                  ContentTemplate="{DataTemplate view:StartPage}" />
+                  ContentTemplate="{DataTemplate view:StartPage}"
+                  Route="StartPage"/>
     <ShellContent Title="Beep records"
                   Icon="headphones.png"
-                  ContentTemplate="{DataTemplate view:MainPage}" />
+                  ContentTemplate="{DataTemplate view:MainPage}"
+                  Route="MainPage" />
     <ShellContent Title="Application info"
                   Icon="info.png"
-                  ContentTemplate="{DataTemplate view:InfoPage}" />
+                  ContentTemplate="{DataTemplate view:InfoPage}"
+                  Route="/InfoPage" />
 
     <!--<FlyoutItem Title="Start page" Icon="home.png">
         <Tab>
