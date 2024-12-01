@@ -15,7 +15,7 @@ namespace BeepTracker.Maui.ViewModel
         [RelayCommand]
         async Task GoToBeepRecordsPage()
         {
-            await Shell.Current.GoToAsync(nameof(MainPage), true, new Dictionary<string, object>{});
+            await Shell.Current.GoToAsync("//"+nameof(MainPage), true, new Dictionary<string, object>{});
         }
     }
 

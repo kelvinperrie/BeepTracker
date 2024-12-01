@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:BeepTracker.Maui"
-    Shell.FlyoutBehavior="Flyout"
+    FlyoutBehavior="Flyout"
     xmlns:view="clr-namespace:BeepTracker.Maui.View"
     Title="BeepTracker.Maui">
 
@@ -25,11 +25,6 @@
         </ResourceDictionary>
     </Shell.Resources>
     
-    <!--<ShellContent
-        Title="Reload?" Icon="home.png"
-        ContentTemplate="{DataTemplate view:StartPage}"
-        Route="StartPage" />-->
-
     <ShellContent Title="Home"
                   Icon="home.png"
                   ContentTemplate="{DataTemplate view:StartPage}"
@@ -41,21 +36,6 @@
     <ShellContent Title="Application info"
                   Icon="info.png"
                   ContentTemplate="{DataTemplate view:InfoPage}"
-                  Route="/InfoPage" />
+                  Route="InfoPage" />
 
-    <!--<FlyoutItem Title="Start page" Icon="home.png">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate view:StartPage}" />
-        </Tab>
-    </FlyoutItem>
-    <FlyoutItem Title="Beep records" Icon="headphones.png">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate view:MainPage}" />
-        </Tab>
-    </FlyoutItem>
-    <FlyoutItem Title="Application info" Icon="info.png">
-        <Tab>
-            <ShellContent ContentTemplate="{DataTemplate view:InfoPage}" />
-        </Tab>
-    </FlyoutItem>-->
 </Shell>
