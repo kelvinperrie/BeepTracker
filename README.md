@@ -8,7 +8,7 @@ The receiver and aerial are usually held by a single person while attempting to 
 
 This application is an attempt to replace a notes app on a phone with something that is easier to record the beeps. A notes app can be challenging to use as the on screen keyboard is small and holds a lot of buttons not needed for this purpose. Additionally, since the phone is being held one handed it can be hard to reach all the entry keys on the on screen keyboard.
 
-This application has been built in .net maui and is still a work in progress.
+This application has been built in .net maui and is still a work in progress. It is currently in an internal testing release (limited to specified users) on the google play store and there is an apk file under the 'installers' folder that can be used to manually install on a phone.
 
 Features:
 * Allows for the storing of beep records locally on the device i.e. doesn't require internet connectivity
