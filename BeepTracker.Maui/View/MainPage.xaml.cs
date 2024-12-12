@@ -17,7 +17,7 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
-        //await _viewModel.GetBeepRecordsAsync();
+        await _viewModel.GetBeepRecordsAsync();
     }
 }
 

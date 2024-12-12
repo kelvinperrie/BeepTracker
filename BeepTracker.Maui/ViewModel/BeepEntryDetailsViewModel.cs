@@ -292,7 +292,6 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             if (answer)
             {
                 localPersistance.DeleteBeepRecord(BeepRecord);
-                await Shell.Current.DisplayAlert("Record Deleted", $"This record has been deleted, when you return to the list view remember to refresh it.", "OK");
                 await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
             }
         }

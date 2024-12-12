@@ -21,16 +21,13 @@ public partial class BeepEntriesViewModel : BaseViewModel
     public BeepEntriesViewModel(IConnectivity connectivity, IGeolocation geolocation, 
         ModelFactory modelFactory, LocalPersistance localPersistance)
     {
-        Title = "asdfasdfasdf";
         this.connectivity = connectivity;
         this.geolocation = geolocation;
         this.modelFactory = modelFactory;
         this.localPersistance = localPersistance;
 
-        //Shell.Current.DisplayAlert("Error!", "test", "OK");
-
-        GetBeepRecordsAsync(); //.Wait();
     }
+
 
     [RelayCommand]
     async Task CreateNewBeepRecord()
@@ -48,13 +45,6 @@ public partial class BeepEntriesViewModel : BaseViewModel
 
         try
         {
-            //if (connectivity.NetworkAccess != NetworkAccess.Internet)
-            //{
-            //    await Shell.Current.DisplayAlert("No connectivity!",
-            //        $"Please check internet and try again.", "OK");
-            //    return;
-            //}
-
             IsBusy = true;
 
             var records = localPersistance.GetBeepRecords();
