@@ -33,6 +33,10 @@
                   Icon="headphones.png"
                   ContentTemplate="{DataTemplate view:MainPage}"
                   Route="MainPage" />
+    <ShellContent Title="Settings"
+                  Icon="settings.png"
+                  ContentTemplate="{DataTemplate view:SettingsPage}"
+                  Route="SettingsPage" />
     <ShellContent Title="Application info"
                   Icon="info.png"
                   ContentTemplate="{DataTemplate view:InfoPage}"

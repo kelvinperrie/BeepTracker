@@ -3,7 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34928.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeepTracker.Maui", "BeepTracker.Maui\BeepTracker.Maui.csproj", "{C26D054E-7677-4C4C-AD04-C8F62DAC4D34}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.Maui", "BeepTracker.Maui\BeepTracker.Maui.csproj", "{C26D054E-7677-4C4C-AD04-C8F62DAC4D34}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.Api", "BeepTracker.Api\BeepTracker.Api.csproj", "{E45793D3-41D2-4D10-A033-8E672B562F99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeepTracker.ApiClient", "BeepTracker.ApiClient\BeepTracker.ApiClient.csproj", "{58529241-E305-4C02-A0C0-34A4A4B75EC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeepTracker.ApiClientConsole", "BeepTracker.ApiClientConsole\BeepTracker.ApiClientConsole.csproj", "{66CAB771-E9B0-46E3-A498-FC54F908FACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +23,18 @@ Global
 		{C26D054E-7677-4C4C-AD04-C8F62DAC4D34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C26D054E-7677-4C4C-AD04-C8F62DAC4D34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C26D054E-7677-4C4C-AD04-C8F62DAC4D34}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E45793D3-41D2-4D10-A033-8E672B562F99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E45793D3-41D2-4D10-A033-8E672B562F99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E45793D3-41D2-4D10-A033-8E672B562F99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E45793D3-41D2-4D10-A033-8E672B562F99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58529241-E305-4C02-A0C0-34A4A4B75EC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58529241-E305-4C02-A0C0-34A4A4B75EC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58529241-E305-4C02-A0C0-34A4A4B75EC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58529241-E305-4C02-A0C0-34A4A4B75EC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66CAB771-E9B0-46E3-A498-FC54F908FACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66CAB771-E9B0-46E3-A498-FC54F908FACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66CAB771-E9B0-46E3-A498-FC54F908FACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66CAB771-E9B0-46E3-A498-FC54F908FACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

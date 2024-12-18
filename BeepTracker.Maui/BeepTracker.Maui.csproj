@@ -146,8 +146,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\BeepTracker.ApiClient\BeepTracker.ApiClient.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="View\InfoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\SettingsPage.xaml">
+	    <Generator></Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="View\StartPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
