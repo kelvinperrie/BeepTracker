@@ -1,5 +1,6 @@
 ﻿using BeepTracker.Maui.Services;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json;
 using System.Windows.Input;
 
@@ -21,11 +22,18 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     public ICommand BackspaceCommand { private set; get; }
     public ICommand DigitCommand { private set; get; }
 
-
+    private readonly ISettingsService settingsService;
     private readonly LocalPersistance localPersistance;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+
+    public ObservableCollection<BeepTracker.ApiClient.Models.Bird> BirdsFromDatabase { get; } = new();
+    [ObservableProperty]
+    private int birdFromDatabaseIndex = -1;
+
+    [ObservableProperty]
+    public bool syncToDatabaseActive = false;   // indicates the app is set to try to sync records to the db - changes what elements are shown
 
     public int SelectedBeepEntryIndex;      // tracks which of the beep entries is currently selected
     public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;   // tracks if the user has entered a digit into an entry after entering the field
@@ -61,19 +69,31 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             if (beepRecord != value)
             {
                 beepRecord = value;
+                // based on the name property in the beeprecord, set the item to be selected in the bird dropdown
+                var indexOfCurrentBirdName = BirdsFromDatabase.ToList().FindIndex(b => b.Name == beepRecord.BirdName);
+                BirdFromDatabaseIndex = indexOfCurrentBirdName;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BirdFromDatabaseIndex"));
                 // mark the first beep entry as being the selected one
-                beepRecord.BeepEntries.ForEach(be => be.Selected = false);  // this is needed for when a records is updated and then reopened from list page
+                beepRecord.BeepEntries.ForEach(be => be.Selected = false);  // this is needed for when a record is updated and then reopened from list page
                 beepRecord.BeepEntries[0].Selected = true;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("BeepRecord"));
             }
         }
     }
 
-    public BeepEntryDetailsViewModel( LocalPersistance localPersistance)
+    public BeepEntryDetailsViewModel( LocalPersistance localPersistance, ISettingsService settingsService)
     {
         this.localPersistance = localPersistance;
+        this.settingsService = settingsService;
+
+        foreach(var bird in this.settingsService.BirdListFromDatabase.OrderBy(b => b.Name))
+        {
+            BirdsFromDatabase.Add(bird);
+        }
 
         SelectedBeepEntryIndex = 0;     // default to the first entry being selected on page load
+
+        SyncToDatabaseActive = this.settingsService.AttemptToSyncRecords;
 
         BeepRecordStatusClickedCommand = new Command<string>(
             execute: (string arg) =>
@@ -123,6 +143,17 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             {
                 return true; // !(arg == "." && Entry.Contains("."));
             });
+    }
+
+    /// <summary>
+    /// triggered when the bird selection drop down is changed
+    /// </summary>
+    /// <param name="value"></param>
+    partial void OnBirdFromDatabaseIndexChanged(int value) {
+        if (value != -1)
+        {
+            BeepRecord.BirdName = BirdsFromDatabase.ElementAt(value).Name;
+        }
     }
 
     public void HandleBeepEntryChange()

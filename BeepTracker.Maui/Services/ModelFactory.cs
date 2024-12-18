@@ -14,6 +14,7 @@ namespace BeepTracker.Maui.Services
 
             var beepRecord = new BeepRecord
             {
+                ClientGeneratedKey = Guid.NewGuid().ToString(),
                 BeepEntries = [],
                 RecordedDate = DateTime.Now,
                 RecordedTime = DateTime.Now.TimeOfDay,

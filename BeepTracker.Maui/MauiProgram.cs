@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using BeepTracker.ApiClient.IoC;
 using BeepTracker.ApiClient;
+using CommunityToolkit.Maui;
 
 namespace BeepTracker.Maui
 {
@@ -11,7 +12,7 @@ namespace BeepTracker.Maui
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .UseMauiApp<App>()
+                .UseMauiApp<App>().UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -19,7 +20,7 @@ namespace BeepTracker.Maui
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             builder.Services.AddClientService(x => x.BaseAddress = "http://10.0.2.2:5041");

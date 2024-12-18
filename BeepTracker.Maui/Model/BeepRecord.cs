@@ -12,6 +12,9 @@ namespace BeepTracker.Maui.Model
     {
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
+        public string clientGeneratedKey;
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
         public DateTime recordedDate;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
@@ -40,6 +43,9 @@ namespace BeepTracker.Maui.Model
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public int status;
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
+        public string? syncResponse;
 
         [Newtonsoft.Json.JsonIgnore]
         public DateTime RecordedDateTime { 

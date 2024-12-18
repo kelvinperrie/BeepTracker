@@ -6,14 +6,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace BeepTracker.Maui.ViewModel
 {
     public partial class SettingsViewModel : BaseViewModel
     {
         private readonly ISettingsService _settingsService;
-        private string _apiBasePath;
         private readonly ClientService _clientService;
+
+        private string _apiBasePath;
+        private bool _attemptToSyncRecords;
+        private string _birdListJson;
 
         public ObservableCollection<Bird> Birds { get; } = new();
 
@@ -23,6 +27,9 @@ namespace BeepTracker.Maui.ViewModel
             _clientService = clientService;
 
             _apiBasePath = _settingsService.ApiBasePath;
+            _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
+            _birdListJson = _settingsService.BirdListJson;
+
         }
 
         public string ApiBasePath
@@ -37,6 +44,25 @@ namespace BeepTracker.Maui.ViewModel
                 {
                     _settingsService.ApiBasePath = _apiBasePath;
                 }
+            }
+        }
+        public bool AttemptToSyncRecords
+        {
+            get => _attemptToSyncRecords;
+            set
+            {
+                _attemptToSyncRecords = value;
+                _settingsService.AttemptToSyncRecords = _attemptToSyncRecords;
+            }
+        }
+
+        public string BirdListJson
+        {
+            get => _birdListJson;
+            set
+            {
+                _birdListJson = value;
+                _settingsService.BirdListJson = _birdListJson;
             }
         }
 
@@ -60,6 +86,9 @@ namespace BeepTracker.Maui.ViewModel
                 {
                     Birds.Add(record);
                 }
+
+                var birdsJson = JsonSerializer.Serialize(Birds);
+                BirdListJson = birdsJson;
 
             }
             catch (Exception ex)

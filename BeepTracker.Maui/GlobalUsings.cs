@@ -1,5 +1,6 @@
 ﻿global using CommunityToolkit.Mvvm.ComponentModel;
 global using CommunityToolkit.Mvvm.Input;
+global using CommunityToolkit.Maui.Converters;
 global using BeepTracker.Maui.Model;
 global using BeepTracker.Maui.View;
 global using BeepTracker.Maui.ViewModel;

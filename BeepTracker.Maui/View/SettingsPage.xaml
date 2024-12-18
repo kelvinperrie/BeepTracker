@@ -6,14 +6,18 @@
     <ScrollView>
         <VerticalStackLayout Padding="10">
             <Label Style="{StaticResource LargeLabel}" Text="Settings"  Padding="0,10" />
+            <Label Style="{StaticResource MediumLabel}" Text="Attempt to sync records" />
+            <CheckBox IsChecked="{Binding AttemptToSyncRecords}" />
             <Label Style="{StaticResource MediumLabel}" Text="API base path" />
             <Entry Text="{Binding ApiBasePath, Mode=TwoWay}"/>
+            <Label Style="{StaticResource MediumLabel}" Text="Bird names" />
+            <Label Style="{StaticResource MediumLabel}" Text="{Binding BirdListJson}" />
             <Button
                 Margin="0,4"
                 Command="{Binding GetBirdsCommand}"
                 IsEnabled="{Binding IsNotBusy}"
                 Style="{StaticResource ButtonOutline}"
-                Text="Get Birds Test" />
+                Text="Update Bird List" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
