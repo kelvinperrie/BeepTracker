@@ -39,7 +39,7 @@ namespace BeepTracker.Maui.Services
             set => Preferences.Set(birdListJson, value);
         }
 
-        // deserialize the list of birds
+        // deserialize the list of birds and present it as a property that can be retrieved
         public List<Bird> BirdListFromDatabase
         {
             get
@@ -49,7 +49,7 @@ namespace BeepTracker.Maui.Services
                     return new List<Bird>();
                 }
                 var birds = JsonSerializer.Deserialize<List<Bird>>(BirdListJson);
-                return birds;
+                return birds ?? new List<Bird>();
             }
         }
 

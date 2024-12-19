@@ -37,7 +37,6 @@ namespace BeepTracker.Maui.ViewModel
             get => _apiBasePath;
             set
             {
-                //SetProperty(ref _apiBasePath, value);
                 _apiBasePath = value;
 
                 if (!string.IsNullOrWhiteSpace(value))

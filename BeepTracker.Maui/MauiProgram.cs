@@ -29,28 +29,32 @@ namespace BeepTracker.Maui
             builder.Services.AddSingleton<IGeolocation>(Geolocation.Default);
             builder.Services.AddSingleton<IMap>(Map.Default);
 
-            builder.Services.AddSingleton<BeepEntriesViewModel>();
-            builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<ModelFactory>();
             builder.Services.AddSingleton<LocalPersistance>();
+            builder.Services.AddSingleton<ISettingsService, SettingsService>();
+
+            builder.Services.AddSingleton<BeepEntriesViewModel>();
+            builder.Services.AddSingleton<MainPage>();
 
             builder.Services.AddSingleton<SettingsViewModel>();
-            builder.Services.AddTransient<BeepEntryDetailsViewModel>();
-            builder.Services.AddTransient<StartPageViewModel>();
-            builder.Services.AddTransient<DetailsPage>();
-            builder.Services.AddTransient<StartPage>();
-            builder.Services.AddTransient<InfoPage>();
-            builder.Services.AddTransient<SettingsPage>();
-            builder.Services.AddTransient<ISettingsService, SettingsService>();
+            builder.Services.AddSingleton<SettingsPage>();
 
+            builder.Services.AddTransient<BeepEntryDetailsViewModel>();
+            builder.Services.AddTransient<DetailsPage>();
+            
+            builder.Services.AddSingleton<StartPageViewModel>();
+            builder.Services.AddSingleton<StartPage>();
+            
+            builder.Services.AddSingleton<InfoPage>();
+
+            var app = builder.Build();
 
             // i detest this
-            var app = builder.Build();
-            var settings = (ISettingsService)app.Services.GetService(typeof(ISettingsService));
-            var apiBasePath = settings.ApiBasePath;
-            var clientService = (ClientService)app.Services.GetService(typeof(ClientService));
+            var settings = (ISettingsService?)app.Services.GetService(typeof(ISettingsService));
+            var apiBasePath = settings?.ApiBasePath;
+            var clientService = (ClientService?)app.Services.GetService(typeof(ClientService));
             // todo - if the user puts an invalid url into the text box then this this will break
-            clientService.SetBaseAddress(apiBasePath);
+            clientService?.SetBaseAddress(apiBasePath??string.Empty);
 
             return app;
         }

@@ -20,7 +20,19 @@ namespace BeepTracker.ApiClient
 
         public void SetBaseAddress(string baseAddress)
         {
-            _httpClient.BaseAddress = new System.Uri(baseAddress);
+            Uri uri = null;
+            try
+            {
+                uri = new System.Uri(baseAddress);
+            }
+            catch
+            {
+                // todo unsure how we're going to do loggin here
+            }
+            finally
+            {
+                _httpClient.BaseAddress = uri;
+            }
         }
 
         public async Task<List<Bird>> GetBirds()

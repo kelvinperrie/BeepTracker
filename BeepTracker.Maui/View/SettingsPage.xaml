@@ -6,12 +6,13 @@
     <ScrollView>
         <VerticalStackLayout Padding="10">
             <Label Style="{StaticResource LargeLabel}" Text="Settings"  Padding="0,10" />
-            <Label Style="{StaticResource MediumLabel}" Text="Attempt to sync records" />
+            <Label Style="{StaticResource MediumLabel}" Text="Attempt to sync records:" Padding="0,10,0,0" />
             <CheckBox IsChecked="{Binding AttemptToSyncRecords}" />
-            <Label Style="{StaticResource MediumLabel}" Text="API base path" />
+            <Label Style="{StaticResource MediumLabel}" Text="API base path:" Padding="0,10,0,0" />
             <Entry Text="{Binding ApiBasePath, Mode=TwoWay}"/>
-            <Label Style="{StaticResource MediumLabel}" Text="Bird names" />
-            <Label Style="{StaticResource MediumLabel}" Text="{Binding BirdListJson}" />
+            <Label Text="Application must be restarted for change in API base path to take effect."/>
+            <Label Style="{StaticResource MediumLabel}" Text="Bird names:" Padding="0,10,0,0" />
+            <Label Text="{Binding BirdListJson}" />
             <Button
                 Margin="0,4"
                 Command="{Binding GetBirdsCommand}"
