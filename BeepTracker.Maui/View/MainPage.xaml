@@ -5,10 +5,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:model="clr-namespace:BeepTracker.Maui.Model"
     xmlns:viewmodel="clr-namespace:BeepTracker.Maui.ViewModel"
+    xmlns:lookups="clr-namespace:BeepTracker.Maui.Lookups"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     ios:Page.UseSafeArea="True"
     Title="Beep Records"
-    x:DataType="viewmodel:BeepEntriesViewModel">
+    x:DataType="viewmodel:BeepEntriesViewModel"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+    <ContentPage.Resources>
+        <ResourceDictionary
+                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
+            <toolkit:EnumToIntConverter x:Key="EnumToIntConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid
         ColumnDefinitions="*,*"
         ColumnSpacing="5"
@@ -41,7 +49,21 @@
                                             IsVisible="False"
                                             Margin="0,0,15,0">
                                             <Image.Triggers>
-                                                <DataTrigger TargetType="Image" Binding="{Binding Status}" Value="2">
+                                                <DataTrigger TargetType="Image" Binding="{Binding UploadStatus}" Value="3">
+                                                    <Setter Property="IsVisible" Value="True" />
+                                                </DataTrigger>
+                                            </Image.Triggers>
+                                        </Image>
+                                        <Image
+                                            Aspect="AspectFill"
+                                            HeightRequest="24"
+                                            Source="error_red.png"
+                                            WidthRequest="24" 
+                                            HorizontalOptions="End"
+                                            IsVisible="False"
+                                            Margin="0,0,15,0">
+                                            <Image.Triggers>
+                                                <DataTrigger TargetType="Image" Binding="{Binding UploadStatus}" Value="4">
                                                     <Setter Property="IsVisible" Value="True" />
                                                 </DataTrigger>
                                             </Image.Triggers>

@@ -99,7 +99,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             execute: (string arg) =>
             {
                 int converted = int.Parse(arg);
-                BeepRecord.Status = converted;
+                BeepRecord.UploadStatus = converted;
             },
             canExecute: (string arg) => { return true; });
 
@@ -153,6 +153,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         if (value != -1)
         {
             BeepRecord.BirdName = BirdsFromDatabase.ElementAt(value).Name;
+            BeepRecord.BirdId = BirdsFromDatabase.ElementAt(value).Id;
         }
     }
 

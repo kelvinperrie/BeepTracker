@@ -31,54 +31,68 @@ namespace BeepTracker.Maui.Services
             // upload it
             // mark it locally as uploaded and save it
 
-            var recordsToUpload = _localPersistance.GetBeepRecords().Where(br => br.Status == (int)BeepRecordStatus.Created);
+            var recordsToUpload = _localPersistance.GetBeepRecords().Where(br => br.UploadStatus == (int)BeepRecordUploadStatus.Created || br.UploadStatus == (int)BeepRecordUploadStatus.Updated);
 
             foreach (var record in recordsToUpload)
             {
-                var remoteRecord = await _clientService.GetByClientGeneratedKey(record.ClientGeneratedKey);
-                if (remoteRecord != null)
+                try
                 {
-                    var recordId = remoteRecord.Id;
-                    var birdId = remoteRecord.BirdId;
-                    // this record is already on the remote side, so we want to update it
-                    // suspect this will overwrite the id? let's find out!
-                    remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
-                    remoteRecord.Id = recordId;
-                    remoteRecord.BirdId = birdId;
+                    var remoteRecord = await _clientService.GetByClientGeneratedKey(record.ClientGeneratedKey);
 
-                    await _clientService.UpdateBeepRecord(remoteRecord);
+                    //throw new Exception("test failure! something bad happened here. I don't know what but it stopped the upload.");
 
-                    record.Status = (int)BeepRecordStatus.Uploaded;
-                    _localPersistance.SaveBeepRecord(record);
-                }
-                else
-                {
-                    // this is a brand new record, very exciting!
-                    remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
-                    // todo - should we store bird id locally? or look it up? what if there is no match?
-                    // if we don't have a bird id then we need to look it up
-                    if(remoteRecord.BirdId == 0)
+                    if (remoteRecord != null)
                     {
-                        var bird = _settingsService.BirdListFromDatabase.FirstOrDefault(b => string.Equals(b.Name, remoteRecord.BirdName, StringComparison.CurrentCultureIgnoreCase));
-                        if(bird != null)
+                        var recordId = remoteRecord.Id;
+                        // if the local record has a bird id then use that, otherwise use the remote one
+                        // is it possible that the remote one can have a bird id and the local can't??????
+                        var birdId = record.birdId != 0 ? record.birdId : remoteRecord.BirdId;
+                        // this record is already on the remote side, so we want to update it
+                        // suspect this will overwrite the id? let's find out!
+                        remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
+                        remoteRecord.Id = recordId;
+                        remoteRecord.BirdId = birdId;
+
+                        await _clientService.UpdateBeepRecord(remoteRecord);
+
+                        record.UploadStatus = (int)BeepRecordUploadStatus.Uploaded;
+                        _localPersistance.SaveBeepRecord(record);
+                    }
+                    else
+                    {
+                        // this is a brand new record, very exciting!
+                        remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
+                        // todo - should we store bird id locally? or look it up? what if there is no match?
+                        // if we don't have a bird id then we need to look it up
+                        if (remoteRecord.BirdId == 0)
                         {
-                            remoteRecord.BirdId = bird.Id;
+                            var bird = _settingsService.BirdListFromDatabase.FirstOrDefault(b => string.Equals(b.Name, remoteRecord.BirdName, StringComparison.CurrentCultureIgnoreCase));
+                            if (bird != null)
+                            {
+                                remoteRecord.BirdId = bird.Id;
+                            }
                         }
-                    }
 
-                    // do some validation?
-                    if(remoteRecord.BirdId == 0)
-                    {
-                        record.SyncResponse = "Record does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.";
-                    }
-                    if(string.IsNullOrEmpty(remoteRecord.ClientGeneratedKey))
-                    {
-                        record.SyncResponse = "Record does not have a client generated key so cannot be uploaded - not sure how that happens ...";
-                    }
+                        // do some validation?
+                        if (remoteRecord.BirdId == 0)
+                        {
+                            throw new Exception("Record does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.");
+                        }
+                        if (string.IsNullOrEmpty(remoteRecord.ClientGeneratedKey))
+                        {
+                            throw new Exception("Record does not have a client generated key so cannot be uploaded - not sure how that happens ...");
+                        }
 
-                    await _clientService.SaveBeepRecord(remoteRecord);
+                        await _clientService.SaveBeepRecord(remoteRecord);
 
-                    record.Status = (int)BeepRecordStatus.Uploaded;
+                        record.UploadStatus = (int)BeepRecordUploadStatus.Uploaded;
+                        _localPersistance.SaveBeepRecord(record);
+                    }
+                } catch (Exception ex)
+                {
+                    var responseMessage = ex.Message;
+                    record.SyncResponse = responseMessage;
+                    record.UploadStatus = (int)BeepRecordUploadStatus.Errored;
                     _localPersistance.SaveBeepRecord(record);
                 }
             }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace BeepTracker.Maui.Lookups
 {
-    internal enum BeepRecordStatus
+    internal enum BeepRecordUploadStatus
     {
-        None = 0, Created=1, Uploaded=2, Errored=3
+        None = 0, Created=1, Updated = 2, Uploaded = 3, Errored = 4
     }
 }

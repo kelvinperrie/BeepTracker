@@ -24,6 +24,9 @@ namespace BeepTracker.Maui.Model
         public string birdName;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
+        public int birdId;
+        [ObservableProperty]
+        [Newtonsoft.Json.JsonIgnore]
         public int? beatsPerMinute;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
@@ -42,7 +45,7 @@ namespace BeepTracker.Maui.Model
         public string filename;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public int status;
+        public int uploadStatus;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public string? syncResponse;

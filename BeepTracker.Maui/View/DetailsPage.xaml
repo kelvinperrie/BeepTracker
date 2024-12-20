@@ -17,6 +17,25 @@
     <ScrollView>
         <VerticalStackLayout Padding="10">
 
+            <Label Style="{StaticResource MediumLabel}" Text="Error during upload:" TextColor="#FF0000" IsVisible="False" >
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                            Binding="{Binding BeepRecord.UploadStatus}"
+                            Value="4">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <Label Text="{Binding BeepRecord.SyncResponse}" TextColor="#FF0000" IsVisible="False" >
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                            Binding="{Binding BeepRecord.UploadStatus}"
+                            Value="4">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            
             <Label Style="{StaticResource MediumLabel}" Text="Bird:" />
             <Picker x:Name="picker" ItemsSource="{Binding BirdsFromDatabase, Mode=TwoWay}"
                 ItemDisplayBinding="{Binding Name}"
@@ -225,7 +244,19 @@
                         </Label.GestureRecognizers>
                     </Label>
                     <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.Status}" Value="1">
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.UploadStatus}" Value="1">
+                            <Setter Property="Stroke" Value="{StaticResource Primary}" />
+                        </DataTrigger>
+                    </Border.Triggers>
+                </Border>
+                <Border Stroke="#fff" StrokeThickness="2" BackgroundColor="#fff" Padding="6,1">
+                    <Label Style="{StaticResource MediumLabel}" Text="Updated" >
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BeepRecordStatusClickedCommand}" CommandParameter="2"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                    <Border.Triggers>
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.UploadStatus}" Value="2">
                             <Setter Property="Stroke" Value="{StaticResource Primary}" />
                         </DataTrigger>
                     </Border.Triggers>
@@ -233,13 +264,12 @@
                 <Border Stroke="#fff" StrokeThickness="2" BackgroundColor="#fff" Padding="6,1">
                     <Label Style="{StaticResource MediumLabel}" Text="Uploaded" >
                         <Label.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding BeepRecordStatusClickedCommand}" CommandParameter="2"/>
+                            <TapGestureRecognizer Command="{Binding BeepRecordStatusClickedCommand}" CommandParameter="3"/>
                         </Label.GestureRecognizers>
                     </Label>
                     <Border.Triggers>
-                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.Status}" Value="2">
+                        <DataTrigger TargetType="Border" Binding="{Binding BeepRecord.UploadStatus}" Value="3">
                             <Setter Property="Stroke" Value="{StaticResource Primary}" />
-                            <Setter Property="StrokeThickness" Value="2" />
                         </DataTrigger>
                     </Border.Triggers>
                 </Border>
