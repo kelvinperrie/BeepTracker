@@ -31,6 +31,7 @@ namespace BeepTracker.Maui
 
             builder.Services.AddSingleton<ModelFactory>();
             builder.Services.AddSingleton<LocalPersistance>();
+            builder.Services.AddSingleton<RecordSyncService>(); 
             builder.Services.AddSingleton<ISettingsService, SettingsService>();
 
             builder.Services.AddSingleton<BeepEntriesViewModel>();
@@ -46,6 +47,8 @@ namespace BeepTracker.Maui
             builder.Services.AddSingleton<StartPage>();
             
             builder.Services.AddSingleton<InfoPage>();
+
+            builder.Services.AddAutoMapper(typeof(MauiProgram));
 
             var app = builder.Build();
 

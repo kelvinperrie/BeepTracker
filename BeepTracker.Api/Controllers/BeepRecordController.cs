@@ -32,6 +32,21 @@ namespace BeepTracker.Api.Controllers
         public async Task<ActionResult<BeepRecordDto>> GetById(int id)
         {
             var record = await _beepTrackerDbContext.BeepRecords.Where(b => b.Id == id).Include(b => b.BeepEntries).SingleOrDefaultAsync();
+            if (record is null)
+            {
+                return NotFound();
+            }
+            var recordDto = _mapper.Map<BeepRecordDto>(record);
+            return recordDto;
+        }
+        [HttpGet("GetByClientGeneratedKey/{key}")]
+        public async Task<ActionResult<BeepRecordDto>> GetByClientGeneratedKey(string key)
+        {
+            var record = await _beepTrackerDbContext.BeepRecords.Where(b => b.ClientGeneratedKey == key).Include(b => b.BeepEntries).SingleOrDefaultAsync();
+            if (record is null)
+            {
+                return null;
+            }
             var recordDto = _mapper.Map<BeepRecordDto>(record);
             return recordDto;
         }

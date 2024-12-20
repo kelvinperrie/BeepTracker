@@ -7,6 +7,10 @@ namespace BeepTracker.Api.Dtos
     public class BeepRecordDto
     {
         public int Id { get; set; }
+        
+        public int BirdId { get; set; }
+        
+        public string ClientGeneratedKey { get; set; }
 
         public DateTime RecordedDate { get; set; }
 

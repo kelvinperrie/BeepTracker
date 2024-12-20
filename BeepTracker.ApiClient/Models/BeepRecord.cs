@@ -8,6 +8,10 @@ namespace BeepTracker.ApiClient.Models
     {
         public int Id { get; set; }
 
+        public int BirdId { get; set; }
+
+        public string ClientGeneratedKey { get; set; } = null!;
+
         public DateTime RecordedDate { get; set; }
 
         //public TimeOnly? RecordedTime { get; set; }

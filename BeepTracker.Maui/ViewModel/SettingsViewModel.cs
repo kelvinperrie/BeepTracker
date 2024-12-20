@@ -14,6 +14,7 @@ namespace BeepTracker.Maui.ViewModel
     {
         private readonly ISettingsService _settingsService;
         private readonly ClientService _clientService;
+        private readonly RecordSyncService _recordSyncService;
 
         private string _apiBasePath;
         private bool _attemptToSyncRecords;
@@ -21,10 +22,11 @@ namespace BeepTracker.Maui.ViewModel
 
         public ObservableCollection<Bird> Birds { get; } = new();
 
-        public SettingsViewModel(ISettingsService settingsService, ClientService clientService)
+        public SettingsViewModel(ISettingsService settingsService, ClientService clientService, RecordSyncService recordSyncService)
         {
             _settingsService = settingsService;
             _clientService = clientService;
+            _recordSyncService = recordSyncService;
 
             _apiBasePath = _settingsService.ApiBasePath;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
@@ -63,6 +65,12 @@ namespace BeepTracker.Maui.ViewModel
                 _birdListJson = value;
                 _settingsService.BirdListJson = _birdListJson;
             }
+        }
+
+        [RelayCommand]
+        public async Task SyncRecords()
+        {
+            _recordSyncService.UploadRecords();
         }
 
         [RelayCommand]

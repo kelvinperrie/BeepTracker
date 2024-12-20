@@ -1,8 +1,11 @@
 ﻿using BeepTracker.ApiClient.Models;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,15 +52,47 @@ namespace BeepTracker.ApiClient
         {
             return await _httpClient.GetFromJsonAsync<BeepRecord?>($"/api/BeepRecord/{id}");
         }
+        public async Task<BeepRecord?> GetByClientGeneratedKey(string key)
+        {
+            var res = await _httpClient.GetAsync($"/api/BeepRecord/GetByClientGeneratedKey/{key}");
+            if (res.StatusCode == HttpStatusCode.NoContent) {
+                return null;
+            } else if (res.IsSuccessStatusCode) {
+                var beepRecord = await res.Content.ReadFromJsonAsync<BeepRecord>();
+                return beepRecord;
+            } else  {
+                return null;
+            }
+
+                //return await _httpClient.GetFromJsonAsync<BeepRecord?>($"/api/BeepRecord/GetByClientGeneratedKey/{key}");
+        }
 
         public async Task SaveBeepRecord(BeepRecord beepRecord)
         {
-            await _httpClient.PostAsJsonAsync("/api/BeepRecord", beepRecord);
+
+            JsonContent content = JsonContent.Create(beepRecord);
+
+            var res = await _httpClient.PostAsync($"/api/BeepRecord", content);
+            if (!res.IsSuccessStatusCode)
+            {
+                var error = res.Content.ReadAsStringAsync().Result;
+            }
+
+            //await _httpClient.PostAsJsonAsync("/api/BeepRecord", beepRecord);
         }
 
         public async Task UpdateBeepRecord(BeepRecord beepRecord)
         {
-            await _httpClient.PutAsJsonAsync("/api/BeepRecord", beepRecord);
+            JsonContent content = JsonContent.Create(beepRecord);
+
+            var res = await _httpClient.PutAsync($"/api/BeepRecord", content);
+            if (!res.IsSuccessStatusCode)
+            {
+                var error = res.Content.ReadAsStringAsync().Result;
+            }
+
+
+            //await _httpClient.PutAsJsonAsync("/api/BeepRecord", beepRecord);
         }
         public async Task DeleteBeepRecord(int id)
         {

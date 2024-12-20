@@ -19,6 +19,11 @@
                 IsEnabled="{Binding IsNotBusy}"
                 Style="{StaticResource ButtonOutline}"
                 Text="Update Bird List" />
+            <Button
+                Margin="0,4"
+                Command="{Binding SyncRecordsCommand}"
+                Style="{StaticResource ButtonOutline}"
+                Text="Sync Records" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
