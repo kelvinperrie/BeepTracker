@@ -65,7 +65,15 @@ namespace BeepTracker.Api.Controllers
         public async Task<ActionResult> Update(BeepRecordDto beepRecord)
         {
             var record = _mapper.Map<BeepRecord>(beepRecord);
-            // todo this is not removing old child entries, so every save we end up with duplicate beepentry records
+            // this does not automatically remove/update beepentry child items, so every save we end up with duplicate beepentry records
+            // they get duplicated because we don't have an index with them on the device - so they come in with index = 0
+            // which means they get saved as new entries
+            // we'll manaully remove any existing ones
+            var beepEntriesInDatabase = _beepTrackerDbContext.BeepEntries.Where(b => b.BeepRecordId == beepRecord.Id);
+            foreach(var beepEntry in beepEntriesInDatabase)
+            {
+                _beepTrackerDbContext.Remove(beepEntry);
+            }
             _beepTrackerDbContext.BeepRecords.Update(record);
             await _beepTrackerDbContext.SaveChangesAsync();
 

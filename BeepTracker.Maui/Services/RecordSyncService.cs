@@ -91,7 +91,7 @@ namespace BeepTracker.Maui.Services
                 } catch (Exception ex)
                 {
                     var responseMessage = ex.Message;
-                    record.SyncResponse = responseMessage;
+                    record.SyncResponse = DateTime.Now.ToString("dd/MM/yyyy HH:mm") + ": " + responseMessage;
                     record.UploadStatus = (int)BeepRecordUploadStatus.Errored;
                     _localPersistance.SaveBeepRecord(record);
                 }

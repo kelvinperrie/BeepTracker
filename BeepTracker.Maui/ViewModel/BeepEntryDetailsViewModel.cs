@@ -189,6 +189,9 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     [RelayCommand]
     public void SaveBeepRecord()
     {
+        // if we're saving and the status is uploaded or errored, then we need to change it to updated
+        // to indicate that something has changed
+        BeepRecord.UploadStatus = (int)BeepRecordUploadStatus.Updated;
         localPersistance.SaveBeepRecord(BeepRecord);
         Shell.Current.DisplayAlert("Save completed", "The beep record has been saved.", "OK");
     }
