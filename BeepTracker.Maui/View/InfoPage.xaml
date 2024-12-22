@@ -37,41 +37,6 @@
                 <Label Grid.Column="1" Grid.Row="4" Text="Potentially hook up to an API at a later date to allow for auto sync with a database."/>
             </Grid>
 
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="20"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-
-                <Label Grid.Column="0" Grid.Row="0" Text="Todo:" Grid.ColumnSpan="2"/>
-
-                <Label Grid.Column="0" Grid.Row="1" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="1" Text="Some way of marking a record as having been uploaded/done."/>
-
-                <Label Grid.Column="0" Grid.Row="2" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="2" Text="Some way of deleting records that are no longer needed."/>
-
-                <Label Grid.Column="0" Grid.Row="3" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="3" Text="Fix the digit entry on beep record details page so that you can add double digit numbers." TextDecorations="Strikethrough"/>
-
-                <Label Grid.Column="0" Grid.Row="4" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="4" Text="The beep record list page should auto refresh on page load?"/>
-
-                <Label Grid.Column="0" Grid.Row="5" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="5" Text="Put lat, lon on beep record details page." TextDecorations="Strikethrough"/>
-            
-                <Label Grid.Column="0" Grid.Row="6" Text="&#x2022;"/>
-                <Label Grid.Column="1" Grid.Row="6" Text="Might be an issue with recorded date and time fields on the beep record details when viewed on andriod." TextDecorations="Strikethrough"/>
-            </Grid>
         
             <Label Margin="10">
                 <Label.FormattedText>

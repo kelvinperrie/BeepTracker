@@ -8,6 +8,12 @@ using System.Threading.Tasks;
 
 namespace BeepTracker.Maui.Services
 {
+    public class UploadRecordsResponse
+    {
+        public int totalRecordsAttempted { get; set; }
+        public int uploadFailureCount { get; set; }
+    }
+
     public class RecordSyncService
     {
         private readonly LocalPersistance _localPersistance;
@@ -24,14 +30,19 @@ namespace BeepTracker.Maui.Services
             _settingsService = settingsService;
         }
 
-        public async void UploadRecords()
+        public async Task<UploadRecordsResponse> UploadRecords()
         {
             // get the unuploaded records
             // for each one
             // upload it
             // mark it locally as uploaded and save it
+            
 
             var recordsToUpload = _localPersistance.GetBeepRecords().Where(br => br.UploadStatus == (int)BeepRecordUploadStatus.Created || br.UploadStatus == (int)BeepRecordUploadStatus.Updated);
+
+            var recordsToUploadCount = recordsToUpload.Count();
+            var failureCount = 0;
+
 
             foreach (var record in recordsToUpload)
             {
@@ -62,6 +73,10 @@ namespace BeepTracker.Maui.Services
                     {
                         // this is a brand new record, very exciting!
                         remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
+                        if(string.IsNullOrEmpty( remoteRecord.BirdName))
+                        {
+                            throw new Exception($"Record from {remoteRecord.RecordedDate} does not have a bird name. To be uploaded it needs to be associated with a bird from the dropdown.");
+                        }
                         // todo - should we store bird id locally? or look it up? what if there is no match?
                         // if we don't have a bird id then we need to look it up
                         if (remoteRecord.BirdId == 0)
@@ -76,11 +91,11 @@ namespace BeepTracker.Maui.Services
                         // do some validation?
                         if (remoteRecord.BirdId == 0)
                         {
-                            throw new Exception("Record does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.");
+                            throw new Exception($"Record for {remoteRecord.BirdName} does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.");
                         }
                         if (string.IsNullOrEmpty(remoteRecord.ClientGeneratedKey))
                         {
-                            throw new Exception("Record does not have a client generated key so cannot be uploaded - not sure how that happens ...");
+                            throw new Exception($"Record for {remoteRecord.BirdName}  does not have a client generated key so cannot be uploaded - not sure how that happens ...");
                         }
 
                         await _clientService.SaveBeepRecord(remoteRecord);
@@ -94,9 +109,17 @@ namespace BeepTracker.Maui.Services
                     record.SyncResponse = DateTime.Now.ToString("dd/MM/yyyy HH:mm") + ": " + responseMessage;
                     record.UploadStatus = (int)BeepRecordUploadStatus.Errored;
                     _localPersistance.SaveBeepRecord(record);
+                    failureCount++;
                 }
             }
 
+            var result = new UploadRecordsResponse
+            {
+                totalRecordsAttempted = recordsToUploadCount,
+                uploadFailureCount = failureCount
+            };
+
+            return result;
         }
     }
 }

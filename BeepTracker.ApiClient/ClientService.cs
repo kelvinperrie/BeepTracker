@@ -30,7 +30,7 @@ namespace BeepTracker.ApiClient
             }
             catch
             {
-                // todo unsure how we're going to do loggin here
+                // todo unsure how we're going to do logging here
             }
             finally
             {

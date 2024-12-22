@@ -70,7 +70,18 @@ namespace BeepTracker.Maui.ViewModel
         [RelayCommand]
         public async Task SyncRecords()
         {
-            _recordSyncService.UploadRecords();
+            var response = await _recordSyncService.UploadRecords();
+            var message = "";
+            var title = response.uploadFailureCount == 0 ? "Done" : "Error";
+            if (response.totalRecordsAttempted == 0)
+            {
+                message = "No records are ready to be uploaded";
+            }
+            else
+            {
+                message = response.uploadFailureCount == 0 ? $"{response.totalRecordsAttempted} record(s) uploaded successfully." : $"{response.uploadFailureCount} out of {response.totalRecordsAttempted} records failed to upload! Check each record to see the error message.";
+            }
+            await Shell.Current.DisplayAlert("Done", message, "OK");
         }
 
         [RelayCommand]
@@ -97,6 +108,7 @@ namespace BeepTracker.Maui.ViewModel
                 var birdsJson = JsonSerializer.Serialize(Birds);
                 BirdListJson = birdsJson;
 
+                await Shell.Current.DisplayAlert("Done", $"Successfully updated the birds list - we received {Birds.Count} birds.", "OK");
             }
             catch (Exception ex)
             {
