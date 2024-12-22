@@ -15,6 +15,7 @@ namespace BeepTracker.Maui.ViewModel
         private readonly ISettingsService _settingsService;
         private readonly ClientService _clientService;
         private readonly RecordSyncService _recordSyncService;
+        private readonly IConnectivity _connectivity;
 
         private string _apiBasePath;
         private bool _attemptToSyncRecords;
@@ -22,17 +23,25 @@ namespace BeepTracker.Maui.ViewModel
 
         public ObservableCollection<Bird> Birds { get; } = new();
 
-        public SettingsViewModel(ISettingsService settingsService, ClientService clientService, RecordSyncService recordSyncService)
+        [ObservableProperty]
+        public string? connectivityValue;
+
+        public SettingsViewModel(ISettingsService settingsService, ClientService clientService, 
+            RecordSyncService recordSyncService, IConnectivity connectivity)
         {
             _settingsService = settingsService;
             _clientService = clientService;
             _recordSyncService = recordSyncService;
+            _connectivity = connectivity;
 
             _apiBasePath = _settingsService.ApiBasePath;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
             _birdListJson = _settingsService.BirdListJson;
 
+            _connectivity.ConnectivityChanged += OnConnectivityChanged;
+            UpdateConnectivityStatus(_connectivity.NetworkAccess);
         }
+
 
         public string ApiBasePath
         {
@@ -67,33 +76,67 @@ namespace BeepTracker.Maui.ViewModel
             }
         }
 
+        private void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            UpdateConnectivityStatus(e.NetworkAccess);
+        }
+
+        private void UpdateConnectivityStatus(NetworkAccess currentNetworkAccess) 
+        {
+            // maybe make this fancier at some point
+            ConnectivityValue = currentNetworkAccess.ToString();
+        }
+
+
         [RelayCommand]
         public async Task SyncRecords()
         {
-            var response = await _recordSyncService.UploadRecords();
-            var message = "";
-            var title = response.uploadFailureCount == 0 ? "Done" : "Error";
-            if (response.totalRecordsAttempted == 0)
+            if (IsBusy)
             {
-                message = "No records are ready to be uploaded";
+                await Shell.Current.DisplayAlert("Warning", "The page is already processing a request.", "OK");
+                return;
             }
-            else
+
+            try
             {
-                message = response.uploadFailureCount == 0 ? $"{response.totalRecordsAttempted} record(s) uploaded successfully." : $"{response.uploadFailureCount} out of {response.totalRecordsAttempted} records failed to upload! Check each record to see the error message.";
+                IsBusy = true;
+
+                var response = await _recordSyncService.UploadRecords();
+                var message = "";
+                var title = response.uploadFailureCount == 0 ? "Done" : "Error";
+                if (response.totalRecordsAttempted == 0)
+                {
+                    message = "There are no records in a state (created or updated) that need to be uploaded.";
+                }
+                else
+                {
+                    message = response.uploadFailureCount == 0 ? $"{response.totalRecordsAttempted} record(s) uploaded successfully." : $"{response.uploadFailureCount} out of {response.totalRecordsAttempted} records failed to upload! Check each record to see the error message.";
+                }
+                await Shell.Current.DisplayAlert("Done", message, "OK");
             }
-            await Shell.Current.DisplayAlert("Done", message, "OK");
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
         }
 
         [RelayCommand]
         public async Task GetBirds()
         {
 
-            if (IsBusy) return;
+            if (IsBusy)
+            {
+                await Shell.Current.DisplayAlert("Warning", "The page is already processing a request.", "OK");
+                return;
+            }
 
             try
             {
                 IsBusy = true;
-
 
                 var birds = await _clientService.GetBirds();
 
@@ -112,7 +155,6 @@ namespace BeepTracker.Maui.ViewModel
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Unable to!!!!!!!!!: {ex.Message}");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
             finally

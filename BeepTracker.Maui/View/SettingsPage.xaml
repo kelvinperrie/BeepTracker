@@ -6,6 +6,8 @@
     <ScrollView>
         <VerticalStackLayout Padding="10">
             <Label Style="{StaticResource LargeLabel}" Text="Settings"  Padding="0,10" />
+            <Label Style="{StaticResource MediumLabel}" Text="Connectivity is:" Padding="0,10,0,0" />
+            <Label Text="{Binding ConnectivityValue}"/>
             <Label Style="{StaticResource MediumLabel}" Text="Attempt to sync records:" Padding="0,10,0,0" />
             <CheckBox IsChecked="{Binding AttemptToSyncRecords}" />
             <Label Style="{StaticResource MediumLabel}" Text="API base path:" Padding="0,10,0,0" />
