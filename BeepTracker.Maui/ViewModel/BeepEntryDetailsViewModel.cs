@@ -1,4 +1,6 @@
 ﻿using BeepTracker.Maui.Services;
+using MetroLog;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json;
@@ -22,8 +24,9 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     public ICommand BackspaceCommand { private set; get; }
     public ICommand DigitCommand { private set; get; }
 
-    private readonly ISettingsService settingsService;
-    private readonly LocalPersistance localPersistance;
+    private readonly ISettingsService _settingsService;
+    private readonly LocalPersistance _localPersistance;
+    private readonly ILogger<BeepEntryDetailsViewModel> _logger;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -38,7 +41,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     public int SelectedBeepEntryIndex;      // tracks which of the beep entries is currently selected
     public bool UserHasEnteredDigitIntoSelectedBeepEntry = false;   // tracks if the user has entered a digit into an entry after entering the field
 
-    private CancellationTokenSource _cancelTokenSource; // cancellation tocken for the request to the device to look up the location
+    private CancellationTokenSource _cancelTokenSource; // cancellation token for the request to the device to look up the location
     
     public bool isCheckingLocation;     // tracks whether we are currently looking up the location
     public bool IsCheckingLocation
@@ -81,19 +84,22 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         }
     }
 
-    public BeepEntryDetailsViewModel( LocalPersistance localPersistance, ISettingsService settingsService)
+    public BeepEntryDetailsViewModel( LocalPersistance localPersistance, ISettingsService settingsService,
+        ILogger<BeepEntryDetailsViewModel> logger)
     {
-        this.localPersistance = localPersistance;
-        this.settingsService = settingsService;
+        _localPersistance = localPersistance;
+        _settingsService = settingsService;
+        _logger = logger;
 
-        foreach(var bird in this.settingsService.BirdListFromDatabase.OrderBy(b => b.Name))
+        // populate a local collection of bird information so that we can bind to it from the view
+        foreach(var bird in _settingsService.BirdListFromDatabase.OrderBy(b => b.Name))
         {
             BirdsFromDatabase.Add(bird);
         }
 
         SelectedBeepEntryIndex = 0;     // default to the first entry being selected on page load
 
-        SyncToDatabaseActive = this.settingsService.AttemptToSyncRecords;
+        SyncToDatabaseActive = _settingsService.AttemptToSyncRecords;
 
         BeepRecordStatusClickedCommand = new Command<string>(
             execute: (string arg) =>
@@ -109,46 +115,41 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
                 int converted = int.Parse(arg);
                 if (BeepRecord.BeatsPerMinute == converted)
                 {
-                    BeepRecord.BeatsPerMinute = null;
+                    BeepRecord.BeatsPerMinute = null; // unset any value
                 }
                 else
                 {
                     BeepRecord.BeatsPerMinute = converted;
                 }
-            },
-            canExecute: (string arg) => { return true; });
+            });
 
         ClearCommand = new Command(
             execute: () =>
             {
                 BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = null;
             });
+
         DigitCommand = new Command<string>(
             execute: (string arg) =>
             {
                 // if the user has just gone into this beep entry and hit a number key, then we want to overwrite the
                 // contents of the beep entry
-                // if they have hit multiple number keys then we want to add them to the beep entry
+                // if they have hit multiple number keys then we want to concatenate them into the beep entry
                 if (UserHasEnteredDigitIntoSelectedBeepEntry)
                 {
                     arg = BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value.ToString() + arg;
-
                 }
                 int converted = int.Parse(arg);
                 BeepRecord.BeepEntries[SelectedBeepEntryIndex].Value = converted;
                 UserHasEnteredDigitIntoSelectedBeepEntry = true;
                 HandleBeepEntryChange();
-            },
-            canExecute: (string arg) =>
-            {
-                return true; // !(arg == "." && Entry.Contains("."));
             });
     }
 
     /// <summary>
     /// triggered when the bird selection drop down is changed
     /// </summary>
-    /// <param name="value"></param>
+    /// <param name="value">the index of the item in the list that has been selected</param>
     partial void OnBirdFromDatabaseIndexChanged(int value) {
         if (value != -1)
         {
@@ -157,6 +158,9 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         }
     }
 
+    /// <summary>
+    /// called when a beep entry is updated by the user
+    /// </summary>
     public void HandleBeepEntryChange()
     {
         // if the first beep entry is changed then update the recorded time
@@ -188,61 +192,78 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     [RelayCommand]
     public void SaveBeepRecord()
     {
-        // if we're saving and the status is uploaded or errored, then we need to change it to updated
-        // to indicate that something has changed
-        BeepRecord.UploadStatus = (int)BeepRecordUploadStatus.Updated;
-        localPersistance.SaveBeepRecord(BeepRecord);
-        Shell.Current.DisplayAlert("Save completed", "The beep record has been saved.", "OK");
+        try
+        {
+            // if we're saving and the status is uploaded or errored, then we need to change it to updated
+            // to indicate that something has changed
+            BeepRecord.UploadStatus = (int)BeepRecordUploadStatus.Updated;
+            _localPersistance.SaveBeepRecord(BeepRecord);
+            Shell.Current.DisplayAlert("Save completed", "The beep record has been saved.", "OK");
+        } catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while trying to save beep record");
+            Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+        }
     }
 
     [RelayCommand]
     public async Task GoToBeepEntriesPage()
     {
 
-        // check to see if data has changed
-
-        if(BeepRecord.Filename == null)
+        try
         {
-            // this has never been saved as a file before
-            bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
 
-            if (answer)
+            // check to see if this record is new and unsaved
+            if (BeepRecord.Filename == null)
             {
-                // do navigation without saving data
-                await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
-                return;
-            } else
-            {
-                return;
+                // this has never been saved as a file before
+                bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
+
+                if (answer)
+                {
+                    // do navigation without saving data
+                    await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
+                    return;
+                }
+                else
+                {
+                    return;
+                }
             }
-        }
 
+            // check to see if data has changed
+            var beepRecordFromFile = _localPersistance.GetBeepRecordByFilename(BeepRecord.Filename);
 
-        var beepRecordFromFile = localPersistance.GetBeepRecordByFilename(BeepRecord.Filename);
-
-        if (!BeepRecord.ContentEquals(beepRecordFromFile))
-        {
-            // there have been changes to the data
-            bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
-
-            if (answer)
+            if (!BeepRecord.ContentEquals(beepRecordFromFile))
             {
-                // do navigation without saving data
-                // overwrite the beep record with the one we just got from the file
-                BeepRecord = beepRecordFromFile;
-                // I don't know why this doesn't work ...
-                // when you return to the list it keeps the changed version of the record
-                // for now tell the user to refresh there list, should figure this out one day
-                await Shell.Current.DisplayAlert("Refresh needed", "When you return to the beep record list make sure you refresh it to reload records from file.", "OK");
-                await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
-            } else
-            {
-                // save the data? or just let them push the save button???
+                // there have been changes to the data
+                bool answer = await Shell.Current.DisplayAlert("Unsaved data?", "Are you sure you want to return to the list page without saving your data?", "Yes", "No");
+
+                if (answer)
+                {
+                    // do navigation without saving data
+                    // overwrite the beep record with the one we just got from the file
+                    BeepRecord = beepRecordFromFile;
+                    // I don't know why this doesn't work ...
+                    // when you return to the list it keeps the changed version of the record
+                    // for now tell the user to refresh there list, should figure this out one day
+                    await Shell.Current.DisplayAlert("Refresh needed", "When you return to the beep record list make sure you refresh it to reload records from file.", "OK");
+                    await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
+                }
+                else
+                {
+                    // save the data? or just let them push the save button???
+                }
             }
-        } else
+            else
+            {
+                // no changes
+                await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
+            }
+        } catch (Exception ex)
         {
-            // no changes
-            await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
+            _logger.LogError(ex, "Error while trying to navigate from details page to list page");
+            await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
         }
     }
 
@@ -308,7 +329,8 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         //   PermissionException
         catch (Exception ex)
         {
-            await Shell.Current.DisplayAlert("Problem while getting location", $"We had an error: {ex.Message}", "OK");
+            _logger.LogError(ex, "Error while trying to get current location");
+            await Shell.Current.DisplayAlert("Problem while getting location", ex.Message, "OK");
         }
         finally
         {
@@ -325,13 +347,14 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
 
             if (answer)
             {
-                localPersistance.DeleteBeepRecord(BeepRecord);
+                _localPersistance.DeleteBeepRecord(BeepRecord);
                 await Shell.Current.GoToAsync("//" + nameof(MainPage), true);
             }
         }
         catch (Exception ex)
         {
             await Shell.Current.DisplayAlert("Problem while deleting the beep record", $"We had an error: {ex.Message}", "OK");
+            _logger.LogError(ex, "Error while deleting beep record");
         }
         finally
         {

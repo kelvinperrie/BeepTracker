@@ -17,6 +17,7 @@ public partial class MainPage : ContentPage
     {
         base.OnAppearing();
 
+        // when this page is displayed, reload the beep record list
         await _viewModel.GetBeepRecordsAsync();
     }
 }
