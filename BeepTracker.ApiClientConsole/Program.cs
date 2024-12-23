@@ -24,7 +24,7 @@ var newBeeps = new BeepRecord
     BirdName = "test",
     BeatsPerMinute = 10,
     Status = 1,
-    RecordedDate = DateTime.Now,
+    RecordedDateTime = DateTime.Now,
 };
 await service.SaveBeepRecord(newBeeps);
 
@@ -34,7 +34,7 @@ newBeeps = new BeepRecord
     BirdName = "test2",
     BeatsPerMinute = 10,
     Status = 1,
-    RecordedDate = DateTime.Now,
+    RecordedDateTime = DateTime.Now,
     BeepEntries = new List<BeepEntry>
     {
         new BeepEntry { Value = 2, Index = 1 },

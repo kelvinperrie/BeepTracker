@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace BeepTracker.Maui.Model
 {
+    /// <summary>
+    /// this class describes the beeprecord that is stored locally on the mobile device
+    /// </summary>
     public partial class BeepRecord : ObservableObject
     {
         [ObservableProperty]
@@ -16,10 +19,7 @@ namespace BeepTracker.Maui.Model
         public string clientGeneratedKey;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
-        public DateTime recordedDate;
-        [ObservableProperty]
-        [Newtonsoft.Json.JsonIgnore]
-        public TimeSpan recordedTime;
+        public DateTime recordedDateTime;
         [ObservableProperty]
         [Newtonsoft.Json.JsonIgnore]
         public string birdName;
@@ -51,13 +51,39 @@ namespace BeepTracker.Maui.Model
         [Newtonsoft.Json.JsonIgnore]
         public string? syncResponse;
 
+        /// <summary>
+        /// this timespan is based on the datetime property so that we can link the onscreen time picker
+        /// to it
+        /// </summary>
         [Newtonsoft.Json.JsonIgnore]
-        public DateTime RecordedDateTime { 
+        public TimeSpan RecordedTime
+        {
             get
             {
-                return RecordedDate.Date.Add(RecordedTime);
-            } 
+                return RecordedDateTime.TimeOfDay;
+            }
+            set
+            {
+                RecordedDateTime = RecordedDateTime.Date.Add(value);
+            }
         }
+        /// <summary>
+        /// this datetime exists so we can surface just the date value of the recordeddatetime to link
+        /// the onscreen date picker to it
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public DateTime RecordedDate
+        {
+            get
+            {
+                return RecordedDateTime.Date;
+            }
+            set
+            {
+                RecordedDateTime = value.Add( RecordedDateTime.TimeOfDay);
+            }
+        }
+
 
         public BeepRecord()
         {
@@ -69,7 +95,11 @@ namespace BeepTracker.Maui.Model
             return JsonConvert.SerializeObject(this, Formatting.Indented);
         }
 
-
+        /// <summary>
+        /// used to compare to beeprecords together to determine if one has changed (i.e. "do you want to save" prompt)
+        /// </summary>
+        /// <param name="other">a beeprecord to compare this one against</param>
+        /// <returns>true if the records have equivalent data</returns>
         public bool ContentEquals(BeepRecord other)
         {
             if(other == null) return false;

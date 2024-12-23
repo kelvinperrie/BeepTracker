@@ -63,7 +63,7 @@ namespace BeepTracker.Maui.Services
                         var recordId = remoteRecord.Id;
                         // if the local record has a bird id then use that, otherwise use the remote one
                         // is it possible that the remote one can have a bird id and the local can't??????
-                        var birdId = record.birdId != 0 ? record.birdId : remoteRecord.BirdId;
+                        var birdId = record.BirdId != 0 ? record.BirdId : remoteRecord.BirdId;
                         // this record is already on the remote side, so we want to update it
                         // suspect this will overwrite the id? let's find out!
                         remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
@@ -81,7 +81,7 @@ namespace BeepTracker.Maui.Services
                         remoteRecord = _mapper.Map<ApiClient.Models.BeepRecord>(record);
                         if(string.IsNullOrEmpty( remoteRecord.BirdName))
                         {
-                            throw new Exception($"Record from {remoteRecord.RecordedDate} does not have a bird name. To be uploaded it needs to be associated with a bird from the dropdown.");
+                            throw new Exception($"Record from {remoteRecord.RecordedDateTime} does not have a bird name. To be uploaded it needs to be associated with a bird from the dropdown.");
                         }
                         // todo - should we store bird id locally? or look it up? what if there is no match?
                         // if we don't have a bird id then we need to look it up

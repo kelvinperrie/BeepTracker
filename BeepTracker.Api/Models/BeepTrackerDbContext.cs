@@ -58,7 +58,7 @@ public partial class BeepTrackerDbContext : DbContext
             entity.Property(e => e.Notes)
                 .HasMaxLength(1000)
                 .IsUnicode(false);
-            entity.Property(e => e.RecordedDate).HasColumnType("datetime");
+            entity.Property(e => e.RecordedDateTime).HasColumnType("datetime");
 
             entity.HasOne(d => d.Bird).WithMany(p => p.BeepRecords)
                 .HasForeignKey(d => d.BirdId)
