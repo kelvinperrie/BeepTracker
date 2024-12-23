@@ -18,6 +18,8 @@ namespace BeepTracker.Maui.Model
         [Newtonsoft.Json.JsonIgnore]
         public string clientGeneratedKey;
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(RecordedTime))]
+        [NotifyPropertyChangedFor(nameof(RecordedDate))]
         [Newtonsoft.Json.JsonIgnore]
         public DateTime recordedDateTime;
         [ObservableProperty]

@@ -162,8 +162,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         // if the first beep entry is changed then update the recorded time
         if(SelectedBeepEntryIndex == 0)
         {
-            BeepRecord.RecordedDate = DateTime.Now.Date;
-            BeepRecord.RecordedTime = DateTime.Now.TimeOfDay;
+            BeepRecord.RecordedDateTime = DateTime.Now;
         }
     }
 
