@@ -10,7 +10,7 @@ namespace BeepTracker.Maui.Services
     {
         public BeepRecord CreateBeepRecord()
         {
-            var beepEntryCount = 16;
+            var beepEntryCount = 16; // may be variable in the future?
 
             var beepRecord = new BeepRecord
             {

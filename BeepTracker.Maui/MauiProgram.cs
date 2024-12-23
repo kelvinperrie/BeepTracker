@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using BeepTracker.ApiClient.IoC;
 using BeepTracker.ApiClient;
 using CommunityToolkit.Maui;
+using MetroLog.MicrosoftExtensions;
+using MetroLog.Operators;
 
 namespace BeepTracker.Maui
 {
@@ -49,6 +51,32 @@ namespace BeepTracker.Maui
             builder.Services.AddSingleton<InfoPage>();
 
             builder.Services.AddAutoMapper(typeof(MauiProgram));
+
+            builder.Logging
+                .SetMinimumLevel(LogLevel.Debug)
+                .AddTraceLogger(
+                    options =>
+                    {
+                        options.MinLevel = LogLevel.Trace;
+                        options.MaxLevel = LogLevel.Critical;
+                    }) // Will write to the Debug Output
+                .AddInMemoryLogger(         
+                    options =>
+                    {
+                        options.MaxLines = 1024;
+                        options.MinLevel = LogLevel.Trace;
+                        options.MaxLevel = LogLevel.Critical;
+                    }) // this is for displaying on the page
+                .AddStreamingFileLogger(    
+                    options =>
+                    {
+                        options.RetainDays = 5;
+                        options.FolderPath = Path.Combine(
+                            FileSystem.CacheDirectory,
+                            "MetroLogs");
+                    }); // this is for sharing the logs via the 'Share Logs' button
+
+            builder.Services.AddSingleton(LogOperatorRetriever.Instance);
 
             var app = builder.Build();
 

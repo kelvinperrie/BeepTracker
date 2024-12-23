@@ -5,7 +5,17 @@
              Title="SettingsPage">
     <ScrollView>
         <VerticalStackLayout Padding="10">
-            <Label Style="{StaticResource LargeLabel}" Text="Settings"  Padding="0,10" />
+            <Grid 
+              HorizontalOptions="Fill">
+                <Label Style="{StaticResource LargeLabel}" Text="Settings"  
+                       Padding="0,10" Grid.Column="0" Grid.Row="1" />
+                <Button
+                    HorizontalOptions="End"
+                    Margin="0,4"
+                    Command="{Binding OpenLogsPageCommand}"
+                    Text="Show logs" Grid.Column="2" Grid.Row="1" />
+            </Grid>
+            
             <Label Style="{StaticResource MediumLabel}" Text="Connectivity is:" Padding="0,10,0,0" />
             <Label Text="{Binding ConnectivityValue}"/>
             <Label Style="{StaticResource MediumLabel}" Text="Attempt to sync records:" Padding="0,10,0,0" />

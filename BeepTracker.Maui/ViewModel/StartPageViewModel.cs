@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,11 @@ namespace BeepTracker.Maui.ViewModel
 {
     public partial class StartPageViewModel
     {
-        public StartPageViewModel()
+        public StartPageViewModel(ILogger<StartPageViewModel> logger)
         {
+            logger.LogDebug("Start page DEBUG message");
+            logger.LogWarning("Start page WARNING message");
+            logger.LogInformation("Start page INFO message");
         }
 
         [RelayCommand]

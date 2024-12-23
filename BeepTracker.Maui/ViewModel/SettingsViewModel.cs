@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using MetroLog.Maui;
+using MetroLog;
+using Microsoft.Extensions.Logging;
 
 namespace BeepTracker.Maui.ViewModel
 {
@@ -16,6 +19,7 @@ namespace BeepTracker.Maui.ViewModel
         private readonly ClientService _clientService;
         private readonly RecordSyncService _recordSyncService;
         private readonly IConnectivity _connectivity;
+        private readonly ILogger<SettingsViewModel> _logger;
 
         private string _apiBasePath;
         private bool _attemptToSyncRecords;
@@ -27,12 +31,13 @@ namespace BeepTracker.Maui.ViewModel
         public string? connectivityValue;
 
         public SettingsViewModel(ISettingsService settingsService, ClientService clientService, 
-            RecordSyncService recordSyncService, IConnectivity connectivity)
+            RecordSyncService recordSyncService, IConnectivity connectivity, ILogger<SettingsViewModel> logger)
         {
             _settingsService = settingsService;
             _clientService = clientService;
             _recordSyncService = recordSyncService;
             _connectivity = connectivity;
+            _logger = logger;
 
             _apiBasePath = _settingsService.ApiBasePath;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
@@ -87,10 +92,21 @@ namespace BeepTracker.Maui.ViewModel
             ConnectivityValue = currentNetworkAccess.ToString();
         }
 
+        [RelayCommand]
+        public async Task OpenLogsPage()
+        {
+            var logController = new LogController();
+
+            // will show the MetroLogPage by default
+            logController.GoToLogsPageCommand.Execute(null);
+
+            //await Shell.Current.GoToAsync("//MetroLogPage", true);
+        }
 
         [RelayCommand]
         public async Task SyncRecords()
         {
+
             if (IsBusy)
             {
                 await Shell.Current.DisplayAlert("Warning", "The page is already processing a request.", "OK");
@@ -99,8 +115,10 @@ namespace BeepTracker.Maui.ViewModel
 
             try
             {
+                _logger.LogInformation("About to attempt to sync records");
                 IsBusy = true;
 
+                _logger.LogInformation("Calling record sync service");
                 var response = await _recordSyncService.UploadRecords();
                 var message = "";
                 var title = response.uploadFailureCount == 0 ? "Done" : "Error";
@@ -116,11 +134,13 @@ namespace BeepTracker.Maui.ViewModel
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error in sync records");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
             finally
             {
                 IsBusy = false;
+                _logger.LogInformation("Record sync completed");
             }
         }
 
