@@ -4,6 +4,7 @@ using Microsoft.Maui.Storage;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -121,6 +122,60 @@ namespace BeepTracker.Maui.Services
                 _logger.LogError(ex, $"Error while deleting beep record {beepRecord}");
                 throw; // rethrow to bubble up
             }
+        }
+
+        public async Task<string?> CreateCompressedBeepRecordsFile()
+        {
+            try
+            {
+                _logger.LogDebug("Attempting to generate compressed beep record archive");
+                var compressedRecords = await GetCompressedBeepRecordsStream();
+
+                var fileName = $"beeprecords-{DateTime.Now.ToString("yyyyMMddHHmmss")}.zip";
+                var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+                _logger.LogDebug($"Archive path established as {filePath}");
+
+                MemoryStream? compressedLogs = (MemoryStream)compressedRecords;
+
+                if (compressedLogs == null)
+                {
+                    return null;
+                }
+
+                _logger.LogDebug($"Attempting to write stream to arvhive file at {filePath}");
+                await using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await compressedLogs.CopyToAsync(fileStream);
+                }
+
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while generating compressed beep record archive");
+                return null;
+            }
+        }
+
+        public Task<Stream> GetCompressedBeepRecordsStream()
+        {
+            var ms = new MemoryStream();
+
+            var beepRecordCounter = 0;
+            using (var a = new ZipArchive(ms, ZipArchiveMode.Create, true))
+            {
+                var beepFolder = new DirectoryInfo(recordPath);
+                foreach (var file in beepFolder.GetFiles())
+                {
+                    beepRecordCounter++;
+                    a.CreateEntryFromFile(file.FullName, file.Name);
+                }
+            }
+
+            ms.Position = 0;
+
+            _logger.LogDebug($"Creating a zip archive memory stream from {beepRecordCounter} beep records");
+            return Task.FromResult<Stream>(ms);
         }
     }
 }

@@ -11,36 +11,69 @@
                     HorizontalOptions="End"
                     Margin="0,4"
                     Command="{Binding OpenLogsPageCommand}"
-                    Text="Show logs" Grid.Column="1" Grid.Row="1" />
+                    Text="Show logs"/>
             </Grid>
-            
-            <Label Style="{StaticResource MediumLabel}" Text="Connectivity is:" Padding="0,10,0,0" />
-            <Label Text="{Binding ConnectivityValue}"/>
+
+            <Grid ColumnDefinitions="Auto,Auto"
+              HorizontalOptions="Fill">
+                <Label Text="This device currently has a connectivity of: " Grid.Column="0" Grid.Row="0"  />
+                <Label Text="{Binding ConnectivityValue}"  Grid.Column="1" Grid.Row="0" />
+
+            </Grid>
+
+            <BoxView Style="{StaticResource Separator}" />
             <Grid 
-                ColumnDefinitions="Auto,Auto"
+                ColumnDefinitions="Auto,*"
                 HorizontalOptions="Fill">
                 <Label VerticalTextAlignment="Start" Style="{StaticResource MediumLabel}" 
                        Text="Attempt to sync records" Padding="0,10,0,0" 
                        Grid.Column="0" Grid.Row="0" 
                        VerticalOptions="Start" HorizontalOptions="Start" />
-                <CheckBox IsChecked="{Binding AttemptToSyncRecords}"  Grid.Column="1" Grid.Row="0" />
+                <CheckBox IsChecked="{Binding AttemptToSyncRecords}" HorizontalOptions="End"  Grid.Column="1" Grid.Row="0" />
             </Grid>
             <Label Style="{StaticResource MediumLabel}" Text="API base path:" Padding="0,10,0,0" />
             <Entry Text="{Binding ApiBasePath, Mode=TwoWay}"/>
             <Label Text="Application must be restarted for change in API base path to take effect."/>
-            <Label Style="{StaticResource MediumLabel}" Text="Bird names:" Padding="0,10,0,0" />
-            <Label Text="{Binding BirdListJson}" />
-            <Button
-                Margin="0,4"
-                Command="{Binding GetBirdsCommand}"
-                IsEnabled="{Binding IsNotBusy}"
-                Style="{StaticResource ButtonOutline}"
-                Text="Update Bird List" />
-            <Button
-                Margin="0,4"
-                Command="{Binding SyncRecordsCommand}"
-                Style="{StaticResource ButtonOutline}"
-                Text="Sync Records" />
+
+            <BoxView Style="{StaticResource Separator}" />
+            <Grid
+                HorizontalOptions="Fill"
+                ColumnDefinitions="*,Auto"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                <Label Style="{StaticResource MediumLabel}" Text="Local data" Padding="0,10,0,0"
+                       Grid.Row="0" Grid.Column="0" />
+
+                <Label Text="Use this to see what bird list this device has."
+                    Grid.Row="1" Grid.Column="0"/>
+                <Button HorizontalOptions="End" VerticalOptions="Center"
+                    Command="{Binding ViewBirdsCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Text="View Bird List" Grid.Row="1" Grid.Column="1" />
+
+                <Label Text="Use this to refresh the list of birds. Requires connectivity to connect to the database."
+                    Grid.Row="2" Grid.Column="0"/>
+                <Button HorizontalOptions="End" VerticalOptions="Center"
+                    Command="{Binding GetBirdsCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Text="Update Bird List" Grid.Row="2" Grid.Column="1" />
+                
+                <Label Text="Create a compressed archive of all the beep records on this device - can be used to help with troubleshooting."
+                    Grid.Row="3" Grid.Column="0"/>
+                <Button x:Name="ShareLogs"  HorizontalOptions="End" VerticalOptions="Center"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Text="Export Beep Records"
+                    Clicked="OnShareBeepRecordsClicked" Grid.Row="3" Grid.Column="1"/>
+
+                <Label Text="Use this to upload local records to the remote database. When I get around to it this is going to be on the home page."
+                    Grid.Row="4" Grid.Column="0"/>
+                <Button HorizontalOptions="End" VerticalOptions="Center"
+                    Margin="0,4"
+                    Command="{Binding SyncRecordsCommand}"
+                    Text="Sync Records" Grid.Row="4" Grid.Column="1" />
+            </Grid>
+            
+            
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

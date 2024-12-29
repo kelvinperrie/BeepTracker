@@ -10,6 +10,8 @@ using System.Text.Json;
 using MetroLog.Maui;
 using MetroLog;
 using Microsoft.Extensions.Logging;
+using MetroLog.Operators;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BeepTracker.Maui.ViewModel
 {
@@ -20,6 +22,7 @@ namespace BeepTracker.Maui.ViewModel
         private readonly RecordSyncService _recordSyncService;
         private readonly IConnectivity _connectivity;
         private readonly ILogger<SettingsViewModel> _logger;
+        private readonly LocalPersistance _localPersistance;
 
         private string _apiBasePath;
         private bool _attemptToSyncRecords;
@@ -31,13 +34,15 @@ namespace BeepTracker.Maui.ViewModel
         public string? connectivityValue;
 
         public SettingsViewModel(ISettingsService settingsService, ClientService clientService, 
-            RecordSyncService recordSyncService, IConnectivity connectivity, ILogger<SettingsViewModel> logger)
+            RecordSyncService recordSyncService, IConnectivity connectivity, ILogger<SettingsViewModel> logger,
+            LocalPersistance localPersistance)
         {
             _settingsService = settingsService;
             _clientService = clientService;
             _recordSyncService = recordSyncService;
             _connectivity = connectivity;
             _logger = logger;
+            _localPersistance = localPersistance;
 
             _apiBasePath = _settingsService.ApiBasePath;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
@@ -88,7 +93,7 @@ namespace BeepTracker.Maui.ViewModel
 
         private void UpdateConnectivityStatus(NetworkAccess currentNetworkAccess) 
         {
-            // maybe make this fancier at some point
+            // todo maybe make this fancier at some point
             ConnectivityValue = currentNetworkAccess.ToString();
         }
 
@@ -99,8 +104,6 @@ namespace BeepTracker.Maui.ViewModel
 
             // will show the MetroLogPage by default
             logController.GoToLogsPageCommand.Execute(null);
-
-            //await Shell.Current.GoToAsync("//MetroLogPage", true);
         }
 
         [RelayCommand]
@@ -181,8 +184,63 @@ namespace BeepTracker.Maui.ViewModel
             {
                 IsBusy = false;
             }
+        }
+
+        [RelayCommand]
+        public async Task ViewBirds()
+        {
+
+            var birdNames = String.Join(", ", _settingsService.BirdListFromDatabase.Select(b => b.Name));
+            var title = $"{_settingsService.BirdListFromDatabase.Count} bird(s) found";
+            await Shell.Current.DisplayAlert(title, $"Birds are: {birdNames}\nJson is: {BirdListJson}", "OK");
+        }
+
+        [RelayCommand]
+        public async Task<string> GenerateCompressedBeepRecordFile()
+        {
+
+            var filePath = await _localPersistance.CreateCompressedBeepRecordsFile();
+            return filePath;
+
+            //var compressedRecords = await _localPersistance.GetCompressedBeepRecords();
+
+            //var fileName = $"beeprecords.zip";
+            //var filePath = Path.Combine(FileSystem.CacheDirectory, fileName);
+
+            //MemoryStream? compressedLogs = (MemoryStream)compressedRecords; // await _logController.GetCompressedLogs();
+
+            //if (compressedLogs == null)
+            //{
+            //    return;
+            //}
+
+            //await using (var fileStream = new FileStream(filePath, FileMode.Create))
+            //{
+            //    await compressedLogs.CopyToAsync(fileStream);
+            //}
+
+            //await Share.Default.RequestAsync(new ShareFileRequest
+            //{
+            //    Title = "Sharing compressed beeprecords",
+            //    File = new ShareFile(filePath)
+            //});
+
+            //await Share.Default.RequestAsync(new ShareTextRequest
+            //{
+            //    Text = "Hello! This is the text being shared",
+            //    Title = "This is the title"
+            //});
 
 
+            //var compressedLogs = await logCompressor.GetCompressedLogs();
+
+            //return new[]
+            //{
+            //    ErrorAttachmentLog.AttachmentWithBinary(
+            //        compressedLogs.ToArray(),
+            //        "logs.zip",
+            //        "application/x-zip-compressed"),
+            //};
         }
 
     }
