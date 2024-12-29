@@ -9,7 +9,7 @@ namespace BeepTracker.Api.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-            return "Hello, the site is working.";
+            return "Hello, the site is working?";
         }
     }
 }
