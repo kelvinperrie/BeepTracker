@@ -12,19 +12,29 @@ namespace BeepTracker.Api.Controllers
     {
         BeepTrackerDbContext _beepTrackerDbContext;
         IMapper _mapper;
+        ILogger<BirdController> _logger;
 
-        public BirdController(BeepTrackerDbContext beepTrackerDbContext, IMapper mapper) 
+        public BirdController(BeepTrackerDbContext beepTrackerDbContext, IMapper mapper, ILogger<BirdController> logger) 
         {
             _beepTrackerDbContext = beepTrackerDbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
         public ActionResult<IEnumerable<BirdDto>> Get()
         {
-            // todo active? based on status?
-            var birds = _beepTrackerDbContext.Birds;
-            return _mapper.Map<List<BirdDto>>(birds);
+            try
+            {
+                // todo - will probably need to limit this based on active or status etc
+                var birds = _beepTrackerDbContext.Birds;
+                return _mapper.Map<List<BirdDto>>(birds);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting bird list");
+                throw;
+            }
         }
 
     }
