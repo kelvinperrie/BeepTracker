@@ -22,12 +22,21 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Logging
+    .SetMinimumLevel(LogLevel.Debug);
+
 var app = builder.Build();
+
+
+var logger = (ILogger<Program>?)app.Services.GetService(typeof(ILogger<Program>));
+logger.LogWarning("We're in the program");
+var connectionString = builder.Configuration.GetConnectionString("BeepTrackerConnection");
+logger.LogWarning("Connection string is " + connectionString);
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 
