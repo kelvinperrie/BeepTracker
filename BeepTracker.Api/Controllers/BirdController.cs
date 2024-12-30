@@ -27,6 +27,7 @@ namespace BeepTracker.Api.Controllers
             try
             {
                 // todo - will probably need to limit this based on active or status etc
+                _logger.LogInformation("Request recieved to get bird list");
                 var birds = _beepTrackerDbContext.Birds;
                 return _mapper.Map<List<BirdDto>>(birds);
             }

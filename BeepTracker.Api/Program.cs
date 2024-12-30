@@ -30,10 +30,10 @@ builder.Logging
 var app = builder.Build();
 
 
-var logger = (ILogger<Program>?)app.Services.GetService(typeof(ILogger<Program>));
-logger.LogWarning("We're in the program");
-var connectionString = builder.Configuration.GetConnectionString("BeepTrackerConnection");
-logger.LogWarning("Connection string is " + connectionString);
+//var logger = (ILogger<Program>?)app.Services.GetService(typeof(ILogger<Program>));
+//logger.LogWarning("We're in the program");
+//var connectionString = builder.Configuration.GetConnectionString("BeepTrackerConnection");
+//logger.LogWarning("Connection string is " + connectionString);
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
