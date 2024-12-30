@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -14,7 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 {
     var connectionString = builder.Configuration.GetConnectionString("BeepTrackerConnection");
-    x.UseSqlServer(connectionString);
+    //x.UseSqlServer(connectionString);
+    x.UseNpgsql(connectionString);
 });
 
 builder.Services.AddAutoMapper(typeof(Program));

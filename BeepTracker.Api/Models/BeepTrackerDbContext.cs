@@ -22,7 +22,7 @@ public partial class BeepTrackerDbContext : DbContext
     public virtual DbSet<Bird> Birds { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("name=BeepTrackerConnection");
+        => optionsBuilder.UseNpgsql("name=BeepTrackerConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
