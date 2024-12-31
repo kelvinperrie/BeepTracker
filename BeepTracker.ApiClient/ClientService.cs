@@ -17,6 +17,15 @@ namespace BeepTracker.ApiClient
 
         public ClientService(ClientOptions clientOptions)
         {
+            // for this to work from a work machine it needs proxy access
+            //var handler = new HttpClientHandler
+            //{
+            //    Proxy = new WebProxy
+            //    {
+            //        Address = new Uri($"http://:3128"),
+            //        Credentials = new NetworkCredential("","","")
+            //    },
+            //};
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new System.Uri(clientOptions.BaseAddress);
         }

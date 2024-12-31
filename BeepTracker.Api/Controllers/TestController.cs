@@ -16,8 +16,7 @@ namespace BeepTracker.Api.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-            var connectionString = _configuration.GetConnectionString("BeepTrackerConnection");
-            return $"Hello, the site is working? This is the connection string {connectionString}";
+            return $"Hello, the site is working?";
         }
     }
 }

@@ -24,12 +24,14 @@ namespace BeepTracker.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<BirdDto>> Get()
         {
+            // todo - will probably need to limit this based on active or status etc
             try
             {
-                // todo - will probably need to limit this based on active or status etc
-                _logger.LogInformation("Request recieved to get bird list");
+                _logger.LogDebug("Request recieved to get bird list");
                 var birds = _beepTrackerDbContext.Birds;
-                return _mapper.Map<List<BirdDto>>(birds);
+                var birdDtos = _mapper.Map<List<BirdDto>>(birds);
+                _logger.LogDebug($"Returning {birdDtos.Count} birds");
+                return birdDtos;
             }
             catch (Exception ex)
             {

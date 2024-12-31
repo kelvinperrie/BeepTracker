@@ -2,6 +2,13 @@ using BeepTracker.Api.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using NLog;
+using NLog.Web;
+using Microsoft.ApplicationInsights.Extensibility;
+
+#if DEBUG
+TelemetryConfiguration.Active.DisableTelemetry = true;
+#endif
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +18,15 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 
+// NLog: Setup NLog for Dependency injection
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
+
 // Add OpenTelemetry and configure it to use Azure Monitor.
+
+#if RELEASE
 builder.Services.AddOpenTelemetry().UseAzureMonitor();
+#endif
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -29,7 +43,7 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Logging
-    .SetMinimumLevel(LogLevel.Debug);
+    .SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
 
 var app = builder.Build();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace BeepTracker.Api.Dtos
 {
@@ -29,5 +30,11 @@ namespace BeepTracker.Api.Dtos
         public int Status { get; set; }
 
         public virtual ICollection<BeepEntryDto> BeepEntries { get; set; } = new List<BeepEntryDto>();
+
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this, Formatting.Indented);
+        }
     }
 }
