@@ -35,6 +35,12 @@
             <Entry Text="{Binding ApiBasePath, Mode=TwoWay}"/>
             <Label Text="Application must be restarted for change in API base path to take effect."/>
 
+            <Label Style="{StaticResource MediumLabel}" Text="API Username:" Padding="0,10,0,0" />
+            <Entry Text="{Binding ApiUsername, Mode=TwoWay}"/>
+
+            <Label Style="{StaticResource MediumLabel}" Text="API Password:" Padding="0,10,0,0" />
+            <Entry Text="{Binding ApiPassword, Mode=TwoWay}"/>
+            
             <BoxView Style="{StaticResource Separator}" />
             <Grid
                 HorizontalOptions="Fill"

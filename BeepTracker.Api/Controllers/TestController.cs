@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BeepTracker.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class TestController : Controller
     {
         public readonly IConfiguration _configuration;
@@ -16,7 +18,8 @@ namespace BeepTracker.Api.Controllers
         [HttpGet]
         public ActionResult<string> Get()
         {
-            return $"Hello, the site is working?";
+            var theUser = this.User.Identity.Name;
+            return $"Hello {theUser}, the site is working!? ";
         }
     }
 }

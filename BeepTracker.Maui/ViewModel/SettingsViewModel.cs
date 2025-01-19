@@ -25,6 +25,8 @@ namespace BeepTracker.Maui.ViewModel
         private readonly LocalPersistance _localPersistance;
 
         private string _apiBasePath;
+        private string _apiUsername;
+        private string _apiPassword;
         private bool _attemptToSyncRecords;
         private string _birdListJson;
 
@@ -45,6 +47,8 @@ namespace BeepTracker.Maui.ViewModel
             _localPersistance = localPersistance;
 
             _apiBasePath = _settingsService.ApiBasePath;
+            _apiUsername = _settingsService.ApiUsername;
+            _apiPassword = _settingsService.ApiPassword;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
             _birdListJson = _settingsService.BirdListJson;
 
@@ -64,6 +68,24 @@ namespace BeepTracker.Maui.ViewModel
                 {
                     _settingsService.ApiBasePath = _apiBasePath;
                 }
+            }
+        }
+        public string ApiUsername
+        {
+            get => _apiUsername;
+            set
+            {
+                _apiUsername = value;
+                _settingsService.ApiUsername = _apiUsername;
+            }
+        }
+        public string ApiPassword
+        {
+            get => _apiPassword;
+            set
+            {
+                _apiPassword = value;
+                _settingsService.ApiPassword = _apiPassword;
             }
         }
         public bool AttemptToSyncRecords
@@ -121,6 +143,7 @@ namespace BeepTracker.Maui.ViewModel
                 _logger.LogInformation("About to attempt to sync records");
                 IsBusy = true;
 
+                _clientService.SetUsernameAndPassword(ApiUsername, ApiPassword);
                 _logger.LogInformation("Calling record sync service");
                 var response = await _recordSyncService.UploadRecords();
                 var message = "";
@@ -161,6 +184,7 @@ namespace BeepTracker.Maui.ViewModel
             {
                 IsBusy = true;
 
+                _clientService.SetUsernameAndPassword(ApiUsername, ApiPassword);
                 var birds = await _clientService.GetBirds();
 
                 if (Birds.Any())

@@ -5,6 +5,9 @@ using Azure.Monitor.OpenTelemetry.AspNetCore;
 using NLog;
 using NLog.Web;
 using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.OpenApi.Models;
+using BeepTracker.Api;
+using Microsoft.AspNetCore.Authentication;
 
 #if DEBUG
 TelemetryConfiguration.Active.DisableTelemetry = true;
@@ -31,7 +34,30 @@ builder.Services.AddOpenTelemetry().UseAzureMonitor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => {
+    c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "basic",
+        In = ParameterLocation.Header,
+        Description = "Basic Authorization header using the Bearer scheme."
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                      new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "basic"
+                            }
+                        },
+                        new string[] {}
+                }
+            });
+});
 
 builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 {
@@ -44,6 +70,10 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 builder.Logging
     .SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
+
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
 
 var app = builder.Build();
 

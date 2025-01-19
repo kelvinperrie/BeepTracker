@@ -10,6 +10,8 @@ namespace BeepTracker.Maui.Services
     public interface ISettingsService
     {
         string ApiBasePath { get; set; }
+        string ApiUsername { get; set; }
+        string ApiPassword { get; set; }
         string BirdListJson { get; set; }
         bool AttemptToSyncRecords { get; set; }
         List<Bird> BirdListFromDatabase { get; }
@@ -19,6 +21,12 @@ namespace BeepTracker.Maui.Services
     {
         private const string apiBasePath = "api_base_path";
         private const string apiBasePathDefault = "";
+
+        private const string apiUsername = "api_username";
+        private const string apiUsernameDefault = "";
+
+        private const string apiPassword = "api_password";
+        private const string apiPasswordDefault = "";
 
         private const string birdListJson = "bird_list";
         private const string birdListJsonDefault = "";
@@ -30,6 +38,16 @@ namespace BeepTracker.Maui.Services
         {
             get => Preferences.Get(apiBasePath, apiBasePathDefault);
             set => Preferences.Set(apiBasePath, value);
+        }
+        public string ApiUsername
+        {
+            get => Preferences.Get(apiUsername, apiUsernameDefault);
+            set => Preferences.Set(apiUsername, value);
+        }
+        public string ApiPassword
+        {
+            get => Preferences.Get(apiPassword, apiPasswordDefault);
+            set => Preferences.Set(apiPassword, value);
         }
 
         // a serialized list of birds that exist in our database (i.e. birds that can have beeprecords recorded)

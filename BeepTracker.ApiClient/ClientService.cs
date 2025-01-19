@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
@@ -14,6 +15,8 @@ namespace BeepTracker.ApiClient
     public class ClientService
     {
         private readonly HttpClient _httpClient;
+        private string _username;
+        private string _password;
 
         public ClientService(ClientOptions clientOptions)
         {
@@ -28,6 +31,21 @@ namespace BeepTracker.ApiClient
             //};
             _httpClient = new HttpClient();
             _httpClient.BaseAddress = new System.Uri(clientOptions.BaseAddress);
+
+
+        }
+
+        public void SetUsernameAndPassword(string username, string password)
+        {
+            _username = username;
+            _password = password;
+
+            _httpClient.DefaultRequestHeaders.Accept.Clear();
+            //client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var byteArray = Encoding.ASCII.GetBytes(_username + ":" + _password);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+
         }
 
         public void SetBaseAddress(string baseAddress)

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BeepTracker.Api.Dtos;
 using BeepTracker.Api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ namespace BeepTracker.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BeepRecordController : ControllerBase
     {
         private readonly BeepTrackerDbContext _beepTrackerDbContext;
