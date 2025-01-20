@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BeepTracker.Api.Dtos;
+using BeepTracker.Api.Lookups;
 using BeepTracker.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,19 @@ namespace BeepTracker.Api.Controllers
             try
             {
                 _logger.LogDebug("Request recieved to get bird list");
-                var birds = _beepTrackerDbContext.Birds;
+
+                // who is requesting this? Get the birds based on their organisation
+                var userName = this.User.Identity?.Name;
+                if (string.IsNullOrEmpty(userName)) {
+                    throw new Exception("Unable to get user name, so unable to determine bird list to retrieve");
+                }
+
+                var user = _beepTrackerDbContext.Users.FirstOrDefault(u => u.Username == userName);
+                if (user == null) {
+                    throw new Exception($"Unable to find user with username of {userName} so can't locate their organisation");
+                }
+
+                var birds = _beepTrackerDbContext.Birds.Where(b => b.OrganisationId == user.OrganisationId && b.StatusId == (int)BirdStatusLookup.Active);
                 var birdDtos = _mapper.Map<List<BirdDto>>(birds);
                 _logger.LogDebug($"Returning {birdDtos.Count} birds");
                 return birdDtos;

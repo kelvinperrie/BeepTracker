@@ -25,7 +25,7 @@ public partial class BeepRecord
 
     public string? Filename { get; set; }
 
-    public int Status { get; set; }
+    public long Status { get; set; }
 
     public virtual ICollection<BeepEntry> BeepEntries { get; set; } = new List<BeepEntry>();
 

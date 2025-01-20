@@ -9,5 +9,9 @@ public partial class Bird
 
     public string Name { get; set; } = null!;
 
+    public int OrganisationId { get; set; }
+
+    public int StatusId { get; set; }
+
     public virtual ICollection<BeepRecord> BeepRecords { get; set; } = new List<BeepRecord>();
 }

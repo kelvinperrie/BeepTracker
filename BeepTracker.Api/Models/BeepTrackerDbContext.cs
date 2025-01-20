@@ -21,6 +21,12 @@ public partial class BeepTrackerDbContext : DbContext
 
     public virtual DbSet<Bird> Birds { get; set; }
 
+    public virtual DbSet<BirdStatus> BirdStatuses { get; set; }
+
+    public virtual DbSet<Organisation> Organisations { get; set; }
+
+    public virtual DbSet<User> Users { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseNpgsql("name=BeepTrackerConnection");
 
@@ -28,51 +34,66 @@ public partial class BeepTrackerDbContext : DbContext
     {
         modelBuilder.Entity<BeepEntry>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("BeepEntry_pkey");
+
             entity.ToTable("BeepEntry");
+
+            entity.Property(e => e.Value).HasDefaultValue(0);
 
             entity.HasOne(d => d.BeepRecord).WithMany(p => p.BeepEntries)
                 .HasForeignKey(d => d.BeepRecordId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BeepEntry_BeepRecord");
+                .HasConstraintName("BeepRecordFK");
         });
 
         modelBuilder.Entity<BeepRecord>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("BeepRecord_pkey");
+
             entity.ToTable("BeepRecord");
 
-            entity.Property(e => e.BirdName)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.ClientGeneratedKey)
-                .HasMaxLength(50)
-                .IsUnicode(false);
-            entity.Property(e => e.Filename)
-                .HasMaxLength(250)
-                .IsUnicode(false);
-            entity.Property(e => e.Latitude)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Longitude)
-                .HasMaxLength(100)
-                .IsUnicode(false);
-            entity.Property(e => e.Notes)
-                .HasMaxLength(1000)
-                .IsUnicode(false);
-            entity.Property(e => e.RecordedDateTime).HasColumnType("datetime");
+            entity.Property(e => e.BeatsPerMinute).HasDefaultValue(0);
 
             entity.HasOne(d => d.Bird).WithMany(p => p.BeepRecords)
                 .HasForeignKey(d => d.BirdId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_BeepRecord_Bird");
+                .HasConstraintName("BirdIdFK");
         });
 
         modelBuilder.Entity<Bird>(entity =>
         {
+            entity.HasKey(e => e.Id).HasName("Birds_pkey");
+
             entity.ToTable("Bird");
 
-            entity.Property(e => e.Name)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Birds_Id_seq\"'::regclass)");
+            entity.Property(e => e.StatusId).HasDefaultValue(0);
+        });
+
+        modelBuilder.Entity<BirdStatus>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("BirdStatus_pkey");
+
+            entity.ToTable("BirdStatus");
+        });
+
+        modelBuilder.Entity<Organisation>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("Organisation_pkey");
+
+            entity.ToTable("Organisation");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("User_pkey");
+
+            entity.ToTable("User");
+
+            entity.HasOne(d => d.Organisation).WithMany(p => p.Users)
+                .HasForeignKey(d => d.OrganisationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("OrganisationFK");
         });
 
         OnModelCreatingPartial(modelBuilder);
