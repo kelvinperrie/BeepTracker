@@ -90,6 +90,10 @@ public partial class BeepTrackerDbContext : DbContext
 
             entity.ToTable("User");
 
+            entity.HasIndex(e => e.Username, "User_Username_Username1_key").IsUnique();
+
+            entity.Property(e => e.Active).HasDefaultValue(true);
+
             entity.HasOne(d => d.Organisation).WithMany(p => p.Users)
                 .HasForeignKey(d => d.OrganisationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

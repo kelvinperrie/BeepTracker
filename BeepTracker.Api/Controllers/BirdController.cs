@@ -13,9 +13,9 @@ namespace BeepTracker.Api.Controllers
     [Authorize]
     public class BirdController : ControllerBase
     {
-        BeepTrackerDbContext _beepTrackerDbContext;
-        IMapper _mapper;
-        ILogger<BirdController> _logger;
+        private readonly BeepTrackerDbContext _beepTrackerDbContext;
+        private readonly IMapper _mapper;
+        private readonly ILogger<BirdController> _logger;
 
         public BirdController(BeepTrackerDbContext beepTrackerDbContext, IMapper mapper, ILogger<BirdController> logger) 
         {

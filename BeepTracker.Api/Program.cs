@@ -6,8 +6,9 @@ using NLog;
 using NLog.Web;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.OpenApi.Models;
-using BeepTracker.Api;
 using Microsoft.AspNetCore.Authentication;
+using BeepTracker.Api.Security;
+using BeepTracker.Api.Services;
 
 #if DEBUG
 TelemetryConfiguration.Active.DisableTelemetry = true;
@@ -67,6 +68,7 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 });
 
 builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddTransient<UserService>();
 
 builder.Logging
     .SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);
