@@ -1,12 +1,15 @@
 using AutoMapper;
 using BeepTracker.Blazor.Business;
 using BeepTracker.Blazor.Components;
-using BeepTracker.Blazor.Models;
+using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
+using BeepTracker.Common.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -24,6 +27,7 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 builder.Services.AddTransient<IOrganisationService, OrganisationService>();
 builder.Services.AddTransient<IBirdService, BirdService>();
 builder.Services.AddTransient<IBeepRecordService, BeepRecordService>();
+builder.Services.AddTransient<ModelFactory>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 

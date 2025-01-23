@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BeepTracker.Blazor.Models;
+namespace BeepTracker.Common.Models;
 
 public partial class Organisation
 {

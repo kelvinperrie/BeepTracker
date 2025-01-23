@@ -3,6 +3,8 @@
 @inject IBeepRecordService BeepRecordService
 @inject IBirdService BirdService
 @inject ISnackbar SnackbarService
+@inject ModelFactory ModelFactory
+@inject IMapper Mapper
 
 <style>
     .couplet-display {
@@ -196,8 +198,11 @@
     public void CreateNewHandler()
     {
         // todo model factory
-        var newRecord = new BeepRecordDto();
-        
-        dataGrid.SetEditingItemAsync(newRecord);
+        var newRecord = ModelFactory.CreateBeepRecord();
+
+        var newRecordDto = Mapper.Map<BeepRecordDto>(newRecord);
+        newRecordDto.BirdId = Bird.Id;
+
+        dataGrid.SetEditingItemAsync(newRecordDto);
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace BeepTracker.Blazor.Models;
+namespace BeepTracker.Common.Models;
 
 public partial class BeepTrackerDbContext : DbContext
 {

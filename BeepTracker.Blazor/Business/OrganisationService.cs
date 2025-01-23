@@ -1,4 +1,4 @@
-﻿using BeepTracker.Blazor.Models;
+﻿using BeepTracker.Common.Models;
 using static MudBlazor.CategoryTypes;
 
 namespace BeepTracker.Blazor.Business

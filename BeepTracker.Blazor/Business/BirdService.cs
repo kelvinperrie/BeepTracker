@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BeepTracker.Blazor.Models;
+using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
 using Microsoft.EntityFrameworkCore;
 using static MudBlazor.CategoryTypes;
