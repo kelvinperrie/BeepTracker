@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BeepTracker.Maui.Services
 {
+    // todo use the one in common
     public class ModelFactory
     {
         public BeepRecord CreateBeepRecord()

@@ -1,0 +1,203 @@
+﻿@page "/beeprecords/{birdid:int}"
+@inject ILogger<Organisation> Logger
+@inject IBeepRecordService BeepRecordService
+@inject IBirdService BirdService
+@inject ISnackbar SnackbarService
+
+<style>
+    .couplet-display {
+        margin: 0 3px;
+    }
+/*     .couplet-edit div {
+        width: 50px;
+    } */
+    .couplet-display-title {
+        vertical-align: middle;
+    }
+    .couplet-edit {
+        display: flex;
+        /* border: solid 2px red; */
+        align-items: center;
+    }
+    .beep-entry-control-container {
+        width: 30px;
+    }
+    .beep-entry-control-container  button {
+        height: 10px;
+        min-width: 30px;    
+    }
+    .beep-entry-control-container  button span {
+        height: 10px;
+    }
+
+    .beep-entry-control-container .mud-input .mud-input-slot {
+        padding: 0px;
+        text-align: center;
+    }
+</style>
+
+<h3>Beep records for @Bird.Name</h3>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
+<MudDataGrid @ref="dataGrid" Items="@Records" T="BeepRecordDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
+            CommittedItemChanges="@CommittedItemChanges" EditTrigger="DataGridEditTrigger.OnRowClick"
+            Filterable=" true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" >
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Beep Records</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" Filterable="false" />
+        <PropertyColumn Property="x => x.RecordedDateTime" Title="Recorded Time" Editable="false" />
+        <PropertyColumn Property="x => x.BeatsPerMinute" Title="BPM" Editable="true" Sortable="false" />
+@*         @for(var i = 0; i < 15; i++)
+        {
+            int index = i;
+            <PropertyColumn Property="x => x.BeepEntries.OrderBy(e => e.Index).ElementAt(index).Value" Title="E1" Editable="true" Filterable="false" Sortable="false" />
+        } *@
+        <TemplateColumn>
+            <HeaderTemplate>Beep Entries</HeaderTemplate>
+            <CellTemplate>
+                @for(var i = 0; i < context.Item.BeepEntries.Count; i+=2)
+                {
+                    <span class="couplet-display">
+                        @{
+                            var elementOne = context.Item.BeepEntries.OrderBy(e => e.Id).ElementAt(i);
+                            var elementOneValue = elementOne != null ? elementOne.Value : 0;
+                            var elementTwoValue = 0;
+                            if(i+1 < context.Item.BeepEntries.Count)
+                            {
+                                var elementTwo = context.Item.BeepEntries.OrderBy(e => e.Id).ElementAt(i + 1);
+                                elementTwoValue = elementTwo != null ? elementTwo.Value : 0;
+                            }
+
+                        }
+                        @elementOneValue,@elementTwoValue
+                    </span>
+                }
+            </CellTemplate>
+            <EditTemplate>
+                @for (var i = 0; i < context.Item.BeepEntries.Count; i += 2)
+                {
+                    var index = i;
+                    <span class="couplet-display couplet-edit">
+                        <span class="couplet-display-title">Couplet @((i + 2) / 2): </span>
+                        <span class="beep-entry-control-container">
+                            <MudButton OnClick="_ => BeepEntryUpdateHandler(context.Item, index, true)" title="aaaaaa" ClickPropagation="false">+</MudButton>
+                            <MudNumericField @bind-Value="context.Item.BeepEntries.OrderBy(e => e.Index).ElementAt(i).Value" HideSpinButtons="true" Disabled="true" />
+                            @* <MudText @bind-Value="context.Item.BeepEntries.OrderBy(e => e.Index).ElementAt(i).Value" /> *@
+                            <MudButton OnClick="_ => BeepEntryUpdateHandler(context.Item, index, false)" title="aaaaaa" ClickPropagation="false" HideSpinButtons="true">-</MudButton>
+                        </span>
+                        <span class="beep-entry-control-container">
+                            <MudButton OnClick="_ => BeepEntryUpdateHandler(context.Item, index+1, true)" title="aaaaaa" ClickPropagation="false">+</MudButton>
+                            <MudNumericField @bind-Value="context.Item.BeepEntries.OrderBy(e => e.Index).ElementAt(i+1).Value" HideSpinButtons="true" Disabled="true" />
+                            <MudButton OnClick="_ => BeepEntryUpdateHandler(context.Item, index+1, false)" title="aaaaaa" ClickPropagation="false">-</MudButton>
+                        </span>
+
+                        @* @context.Item.BeepEntries.OrderBy(e => e.Index).ElementAt(i).Value,@context.Item.BeepEntries.OrderBy(e => e.Index).ElementAt(i + 1).Value *@
+                    </span>
+                }
+            </EditTemplate>
+        </TemplateColumn>
+        <PropertyColumn Property="x => x.ClientGeneratedKey" Title="Client Key" Editable="true" />
+        <PropertyColumn Property="x => x.Latitude" Title="Lat" Editable="true" Required="false" />
+        <PropertyColumn Property="x => x.Longitude" Title="Long" Editable="true" Required="false" />
+        <PropertyColumn Property="x => x.Notes" Title="Notes" Editable="true" Required="false" />
+@*         <PropertyColumn Property="x => x.Status.Status" Title="Status" Editable="false" >
+            <EditTemplate>
+                 <MudSelect @bind-Value="context.Item.StatusId" Required RequiredError="You must select a status!!!" Margin="@Margin.Dense">
+                    <MudSelectItem Value="0">None</MudSelectItem>
+                    <MudSelectItem Value="1">Active</MudSelectItem>
+                    <MudSelectItem Value="2">Inactive</MudSelectItem>
+                </MudSelect> 
+            </EditTemplate>
+        </PropertyColumn> *@
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="BeepRecordDto" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    // [SupplyParameterFromQuery]
+    public int BirdId { get; set; }
+
+    public BirdDto Bird { get; set; }
+    public IEnumerable<BeepRecordDto> Records = new List<BeepRecordDto>();
+    private MudDataGrid<BeepRecordDto> dataGrid;
+    DataGridFilterMode _filterMode = DataGridFilterMode.ColumnFilterMenu;
+    DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive;
+    private string _searchString;   // stores the value that the user is filtering the table on
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Bird = BirdService.GetById(BirdId);
+
+            Records = BeepRecordService.GetAllForBird(BirdId).OrderBy(b => b.RecordedDateTime);
+            //Logger.LogInformation($"We got {Organisations.Count()} organisations for display");
+
+            // var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            // var user = authstate.User;
+            // name = user?.Identity?.Name ?? "Unknown user";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error while setting up beeprecord page");
+            SnackbarService.Add("Error while setting up beeprecord page: " + ex.Message, Severity.Error);
+        }
+    }
+
+    private Func<BeepRecordDto, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        // if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        // if (x.HospitalId.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        // if (x.ShortName != null && x.ShortName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        return false;
+    };
+
+    void BeepEntryUpdateHandler(BeepRecordDto beepRecordDto, int beepEntryIndex, bool increase)
+    {
+        var valueToUpdate = increase ? beepRecordDto.BeepEntries.ElementAt(beepEntryIndex).Value + 1 : beepRecordDto.BeepEntries.ElementAt(beepEntryIndex).Value - 1;
+        beepRecordDto.BeepEntries.ElementAt(beepEntryIndex).Value = valueToUpdate;
+    }
+
+    void CommittedItemChanges(BeepRecordDto item)
+    {
+        try
+        {
+            BeepRecordService.Update(item);
+
+            Logger.LogInformation($"Updated beeprecord! The new info is {item}");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, $"Error while saving beeprecord changes: {item}");
+            SnackbarService.Add("Error while saving beeprecord changes: " + ex.Message, Severity.Error);
+        }
+    }
+
+    /// <summary>
+    /// creates a new item - shows the dialog with no data
+    /// </summary>
+    public void CreateNewHandler()
+    {
+        // todo model factory
+        var newRecord = new BeepRecordDto();
+        
+        dataGrid.SetEditingItemAsync(newRecord);
+    }
+}

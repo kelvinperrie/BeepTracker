@@ -1,0 +1,115 @@
+﻿@page "/birds/{organisationid:int}"
+@inject ILogger<Organisation> Logger
+@inject IOrganisationService OrganisationService
+@inject IBirdService BirdService
+@inject ISnackbar SnackbarService
+
+<h3>Birds for @Organisation.Name</h3>
+
+<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
+<MudDataGrid @ref="dataGrid" Items="@Birds" T="BirdDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
+            CommittedItemChanges="@CommittedItemChanges" EditTrigger="DataGridEditTrigger.OnRowClick"
+            Filterable=" true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" >
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Birds</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" />
+        <PropertyColumn Property="x => x.Name" Title="Name" Editable="true" />
+        <PropertyColumn Property="x => x.Status.Status" Title="Status" Editable="false" >
+            <EditTemplate>
+                 <MudSelect @bind-Value="context.Item.StatusId" Required RequiredError="You must select a status!!!" Margin="@Margin.Dense">
+                    @* //todo make this dynamic *@
+                    <MudSelectItem Value="0">None</MudSelectItem>
+                    <MudSelectItem Value="1">Active</MudSelectItem>
+                    <MudSelectItem Value="2">Inactive</MudSelectItem>
+                </MudSelect> 
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn>
+            <HeaderTemplate>Beep Records</HeaderTemplate>
+            <CellTemplate>
+                <MudLink Href="@($"/beeprecords/{@context.Item.Id}")">view beep records</MudLink>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="BirdDto" />
+    </PagerContent>
+</MudDataGrid>
+
+@code {
+    [Parameter]
+    // [SupplyParameterFromQuery]
+    public int OrganisationId { get; set; }
+
+    public Organisation Organisation { get; set; }
+    public IEnumerable<BirdDto> Birds = new List<BirdDto>();
+    private MudDataGrid<BirdDto> dataGrid;
+    DataGridFilterMode _filterMode = DataGridFilterMode.ColumnFilterMenu;
+    DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive;
+    private string _searchString;   // stores the value that the user is filtering the table on
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            Organisation = OrganisationService.GetAll().FirstOrDefault(o => o.Id == OrganisationId);
+
+            Birds = BirdService.GetAllForOrganisation(OrganisationId).OrderBy(b => b.Name);
+            //Logger.LogInformation($"We got {Organisations.Count()} organisations for display");
+
+            // var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            // var user = authstate.User;
+            // name = user?.Identity?.Name ?? "Unknown user";
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error while setting up birds page");
+            SnackbarService.Add("Error while setting up birds page: " + ex.Message, Severity.Error);
+        }
+    }
+
+    private Func<BirdDto, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        // if (x.HospitalId.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        // if (x.ShortName != null && x.ShortName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+        //     return true;
+
+        return false;
+    };
+
+    void CommittedItemChanges(BirdDto item)
+    {
+        try
+        {
+            BirdService.Update(item);
+
+            Logger.LogInformation($"Updated bird! The new info is {item}");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, $"Error while saving bird changes: {item}");
+            SnackbarService.Add("Error while saving bird changes: " + ex.Message, Severity.Error);
+        }
+    }
+
+    /// <summary>
+    /// creates a new item - shows the dialog with no data
+    /// </summary>
+    public void CreateNewHandler()
+    {
+        dataGrid.SetEditingItemAsync(new BirdDto());
+    }
+}

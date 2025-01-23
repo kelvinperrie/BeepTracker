@@ -1,0 +1,2 @@
+Scaffold-DbContext name=BeepTrackerConnection Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Context "BeepTrackerDbContext" -force
+Scaffold-DbContext name=BeepTrackerConnection Npgsql.EntityFrameworkCore.PostgreSQL -OutputDir Models -Context "BeepTrackerDbContext" -force
