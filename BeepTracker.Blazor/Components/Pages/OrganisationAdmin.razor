@@ -1,12 +1,12 @@
 ﻿@page "/organisations"
-@inject ILogger<Organisation> Logger
+@inject ILogger<OrganisationAdmin> Logger
 @inject IOrganisationService OrganisationService
 @inject ISnackbar SnackbarService
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
 
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
-<MudDataGrid @ref="dataGrid" Items="@Organisations" T="Organisation" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
+<MudDataGrid @ref="dataGrid" Items="@Organisations" T="OrganisationDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
              CommittedItemChanges="@CommittedItemChanges" EditTrigger="DataGridEditTrigger.OnRowClick ">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Organisations</MudText>
@@ -30,15 +30,21 @@
                 <MudLink Href="@($"/birds/{@context.Item.Id}")">view birds</MudLink>
             </CellTemplate>
         </TemplateColumn>
+        <TemplateColumn>
+            <HeaderTemplate>Users</HeaderTemplate>
+            <CellTemplate>
+                <MudLink Href="@($"/user/{@context.Item.Id}")">view users</MudLink>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="Organisation" />
+        <MudDataGridPager T="OrganisationDto" />
     </PagerContent>
 </MudDataGrid>
 
 @code {
-    IEnumerable<Organisation> Organisations = new List<Organisation>();
-    private MudDataGrid<Organisation> dataGrid;
+    IEnumerable<OrganisationDto> Organisations = new List<OrganisationDto>();
+    private MudDataGrid<OrganisationDto> dataGrid;
     private string _searchString;   // stores the value that the user is filtering the table on
 
     protected override async Task OnInitializedAsync()
@@ -59,7 +65,7 @@
         }
     }
 
-    private Func<Organisation, bool> _quickFilter => x =>
+    private Func<OrganisationDto, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
@@ -76,7 +82,7 @@
         return false;
     };
 
-    void CommittedItemChanges(Organisation item)
+    void CommittedItemChanges(OrganisationDto item)
     {
         try
         {
@@ -96,6 +102,6 @@
     /// </summary>
     public void CreateNewHandler()
     {
-        dataGrid.SetEditingItemAsync(new Organisation());
+        dataGrid.SetEditingItemAsync(new OrganisationDto());
     }
 }

@@ -1,38 +1,52 @@
-﻿using BeepTracker.Common.Models;
+﻿using AutoMapper;
+using BeepTracker.Common.Dtos;
+using BeepTracker.Common.Models;
 using static MudBlazor.CategoryTypes;
 
 namespace BeepTracker.Blazor.Business
 {
     public interface IOrganisationService
     {
-        IEnumerable<Organisation> GetAll();
-        void Update(Organisation organisation);
+        IEnumerable<OrganisationDto> GetAll();
+        void Update(OrganisationDto organisation);
+        OrganisationDto? GetById(int id);
     }
 
     public class OrganisationService : IOrganisationService
     {
 
+        private readonly IMapper _mapper;
         public readonly BeepTrackerDbContext _context;
 
-        public OrganisationService(BeepTrackerDbContext context)
+        public OrganisationService(BeepTrackerDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Organisation> GetAll()
+        public IEnumerable<OrganisationDto> GetAll()
         {
-            return _context.Organisations;
+            return _context.Organisations.Select(o => _mapper.Map<OrganisationDto>(o));
         }
 
-        public void Update(Organisation organisation)
+        public OrganisationDto? GetById(int id)
         {
-            if (_context.Organisations.Any(w => w.Id == organisation.Id))
+            var organisation = _context.Organisations.FirstOrDefault(o => o.Id == id);
+            return organisation == null ? null : _mapper.Map<OrganisationDto>(organisation);
+        }
+
+        public void Update(OrganisationDto organisation)
+        {
+
+            var organisationInDatabase = _context.Organisations.FirstOrDefault(o => o.Id == organisation.Id);
+            if (organisationInDatabase != null)
             {
-                _context.Attach(organisation);
+                _mapper.Map(organisation, organisationInDatabase);
             }
             else
             {
-                _context.Add(organisation);
+                var updatedOrganisation = _mapper.Map<Organisation>(organisation);
+                _context.Add(updatedOrganisation);
             }
             _context.SaveChanges();
         }

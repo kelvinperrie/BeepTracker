@@ -1,17 +1,18 @@
-﻿@page "/birds/{organisationid:int}"
-@inject ILogger<BirdsAdmin> Logger
+﻿@page "/user/{organisationid:int}"
+@inject ILogger<UserAdmin> Logger
 @inject IOrganisationService OrganisationService
 @inject IBirdService BirdService
+@inject IUserService UserService
 @inject ISnackbar SnackbarService
 
-<h3>Birds for @Organisation.Name</h3>
+<h3>Users for @Organisation.Name</h3>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
-<MudDataGrid @ref="dataGrid" Items="@Birds" T="BirdDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
+<MudDataGrid @ref="dataGrid" Items="@Users" T="UserDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
             CommittedItemChanges="@CommittedItemChanges" EditTrigger="DataGridEditTrigger.OnRowClick"
             Filterable=" true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" >
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Birds</MudText>
+        <MudText Typo="Typo.h6">Users</MudText>
         <MudSpacer />
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -19,25 +20,31 @@
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" />
         <PropertyColumn Property="x => x.Name" Title="Name" Editable="true" />
-        <PropertyColumn Property="x => x.Status.Status" Title="Status" Editable="false" >
+        <PropertyColumn Property="x => x.Username" Title="Username" Editable="true" />
+        <PropertyColumn Property="x => x.Password" Title="Password" Editable="true" />
+        <PropertyColumn Property="x => x.Active" Title="Active" Editable="true">
+            <EditTemplate Context="cellContext">
+                <MudCheckBox T="bool" Label="Active" @bind-Value="cellContext.Item.Active"></MudCheckBox>
+            </EditTemplate>
+        </PropertyColumn>
+        @* <PropertyColumn Property="x => x.Status.Status" Title="Status" Editable="false" >
             <EditTemplate>
                  <MudSelect @bind-Value="context.Item.StatusId" Required RequiredError="You must select a status!!!" Margin="@Margin.Dense">
-                    @* //todo make this dynamic *@
                     <MudSelectItem Value="0">None</MudSelectItem>
                     <MudSelectItem Value="1">Active</MudSelectItem>
                     <MudSelectItem Value="2">Inactive</MudSelectItem>
                 </MudSelect> 
             </EditTemplate>
-        </PropertyColumn>
-        <TemplateColumn>
+        </PropertyColumn> *@
+@*         <TemplateColumn>
             <HeaderTemplate>Beep Records</HeaderTemplate>
             <CellTemplate>
                 <MudLink Href="@($"/beeprecords/{@context.Item.Id}")">view beep records</MudLink>
             </CellTemplate>
-        </TemplateColumn>
+        </TemplateColumn> *@
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="BirdDto" />
+        <MudDataGridPager T="UserDto" />
     </PagerContent>
 </MudDataGrid>
 
@@ -47,8 +54,8 @@
     public int OrganisationId { get; set; }
 
     public OrganisationDto Organisation { get; set; }
-    public IEnumerable<BirdDto> Birds = new List<BirdDto>();
-    private MudDataGrid<BirdDto> dataGrid;
+    public IEnumerable<UserDto> Users = new List<UserDto>();
+    private MudDataGrid<UserDto> dataGrid;
     DataGridFilterMode _filterMode = DataGridFilterMode.ColumnFilterMenu;
     DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive;
     private string _searchString;   // stores the value that the user is filtering the table on
@@ -59,7 +66,7 @@
         {
             Organisation = OrganisationService.GetById(OrganisationId);
 
-            Birds = BirdService.GetAllForOrganisation(OrganisationId).OrderBy(b => b.Name);
+            Users = UserService.GetAllForOrganisation(OrganisationId).OrderBy(b => b.Name);
             //Logger.LogInformation($"We got {Organisations.Count()} organisations for display");
 
             // var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -73,7 +80,7 @@
         }
     }
 
-    private Func<BirdDto, bool> _quickFilter => x =>
+    private Func<UserDto, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
@@ -81,8 +88,8 @@
         if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
             return true;
 
-        // if (x.HospitalId.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-        //     return true;
+        if (x.Username.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
 
         // if (x.ShortName != null && x.ShortName.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
         //     return true;
@@ -90,18 +97,18 @@
         return false;
     };
 
-    void CommittedItemChanges(BirdDto item)
+    void CommittedItemChanges(UserDto item)
     {
         try
         {
-            BirdService.Update(item);
+            UserService.Update(item);
 
-            Logger.LogInformation($"Updated bird! The new info is {item}");
+            Logger.LogInformation($"Updated user! The new info is {item}");
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, $"Error while saving bird changes: {item}");
-            SnackbarService.Add("Error while saving bird changes: " + ex.Message, Severity.Error);
+            Logger.LogError(ex, $"Error while saving user changes: {item}");
+            SnackbarService.Add("Error while saving user changes: " + ex.Message, Severity.Error);
         }
     }
 
@@ -110,6 +117,10 @@
     /// </summary>
     public void CreateNewHandler()
     {
-        dataGrid.SetEditingItemAsync(new BirdDto());
+        var newUser = new UserDto
+        {
+            OrganisationId = OrganisationId
+        };
+        dataGrid.SetEditingItemAsync(newUser);
     }
 }

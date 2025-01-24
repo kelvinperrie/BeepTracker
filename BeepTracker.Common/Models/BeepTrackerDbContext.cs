@@ -69,6 +69,11 @@ public partial class BeepTrackerDbContext : DbContext
             entity.Property(e => e.Id).HasDefaultValueSql("nextval('\"Birds_Id_seq\"'::regclass)");
             entity.Property(e => e.StatusId).HasDefaultValue(0);
 
+            entity.HasOne(d => d.Organisation).WithMany(p => p.Birds)
+                .HasForeignKey(d => d.OrganisationId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKOrganisationId");
+
             entity.HasOne(d => d.Status).WithMany(p => p.Birds)
                 .HasForeignKey(d => d.StatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

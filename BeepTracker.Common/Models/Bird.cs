@@ -15,5 +15,7 @@ public partial class Bird
 
     public virtual ICollection<BeepRecord> BeepRecords { get; set; } = new List<BeepRecord>();
 
+    public virtual Organisation Organisation { get; set; } = null!;
+
     public virtual BirdStatus Status { get; set; } = null!;
 }

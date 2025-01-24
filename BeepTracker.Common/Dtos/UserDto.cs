@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace BeepTracker.Common.Models;
+namespace BeepTracker.Common.Dtos;
 
-public partial class User
+public partial class UserDto
 {
     public int Id { get; set; }
 
@@ -17,5 +17,4 @@ public partial class User
 
     public bool Active { get; set; }
 
-    public virtual Organisation Organisation { get; set; } = null!;
 }

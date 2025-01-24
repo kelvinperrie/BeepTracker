@@ -1,5 +1,5 @@
 ﻿@page "/beeprecords/{birdid:int}"
-@inject ILogger<Organisation> Logger
+@inject ILogger<BeepRecordAdmin> Logger
 @inject IBeepRecordService BeepRecordService
 @inject IBirdService BirdService
 @inject ISnackbar SnackbarService
@@ -159,8 +159,8 @@
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
 
-        // if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
-        //     return true;
+        if (x.ClientGeneratedKey.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
 
         // if (x.HospitalId.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
         //     return true;

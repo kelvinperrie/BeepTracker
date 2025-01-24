@@ -9,5 +9,7 @@ public partial class Organisation
 
     public string Name { get; set; } = null!;
 
+    public virtual ICollection<Bird> Birds { get; set; } = new List<Bird>();
+
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

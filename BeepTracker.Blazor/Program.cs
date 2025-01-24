@@ -27,6 +27,7 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 builder.Services.AddTransient<IOrganisationService, OrganisationService>();
 builder.Services.AddTransient<IBirdService, BirdService>();
 builder.Services.AddTransient<IBeepRecordService, BeepRecordService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<ModelFactory>();
 
 builder.Services.AddAutoMapper(typeof(Program));

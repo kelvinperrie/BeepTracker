@@ -12,6 +12,8 @@ namespace BeepTracker.Api
             CreateMap<BeepEntry, BeepEntryDto>().ReverseMap();
             CreateMap<Bird, BirdDto>().ReverseMap();
             CreateMap<BirdStatus, BirdStatusDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<Organisation, OrganisationDto>().ReverseMap(); 
         }
     }
 }
