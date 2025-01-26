@@ -1,4 +1,4 @@
-name: Build and deploy .NET Core application to Web App BeepTrackerApiAppService
+name: Build and deploy BeepTracker Api AppService
 on:
   push:
     branches:
