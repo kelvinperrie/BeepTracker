@@ -28,6 +28,7 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     private readonly LocalPersistance _localPersistance;
     private readonly ILogger<BeepEntryDetailsViewModel> _logger;
 
+    // todo is this why we couldn't have the BeepRecord propery as observable?
     public event PropertyChangedEventHandler PropertyChanged;
 
 

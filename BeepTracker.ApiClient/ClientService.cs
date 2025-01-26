@@ -67,8 +67,17 @@ namespace BeepTracker.ApiClient
 
         public async Task<List<Bird>> GetBirds()
         {
-            // todo error handling etc
-            return await _httpClient.GetFromJsonAsync<List<Bird>?>("/api/Bird");
+            var res = await _httpClient.GetAsync($"/api/Bird");
+            if (!res.IsSuccessStatusCode)
+            {
+                var error = res.Content.ReadAsStringAsync().Result;
+                throw new Exception(error);
+            }
+            else
+            {
+                var birds = await res.Content.ReadFromJsonAsync<List<Bird>>();
+                return birds;
+            }
         }
 
         public async Task<List<BeepRecord>> GetBeepRecords()
