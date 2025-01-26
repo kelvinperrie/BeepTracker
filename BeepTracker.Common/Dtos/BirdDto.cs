@@ -9,6 +9,8 @@ public class BirdDto
 
     public string Name { get; set; } = null!;
 
+    public int OrganisationId { get; set; }
+
     public int StatusId { get; set; }
 
     public BirdStatusDto Status { get; set; }

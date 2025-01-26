@@ -94,6 +94,7 @@
     {
         try
         {
+            item.OrganisationId = OrganisationId;
             BirdService.Update(item);
 
             Logger.LogInformation($"Updated bird! The new info is {item}");
