@@ -9,6 +9,10 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using BeepTracker.Api.Security;
 using BeepTracker.Api.Services;
+using Asp.Versioning;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using BeepTracker.Api.Swagger;
 
 #if DEBUG
 TelemetryConfiguration.Active.DisableTelemetry = true;
@@ -27,7 +31,6 @@ builder.Logging.ClearProviders();
 builder.Host.UseNLog();
 
 // Add OpenTelemetry and configure it to use Azure Monitor.
-
 #if RELEASE
 builder.Services.AddOpenTelemetry().UseAzureMonitor();
 #endif
@@ -35,7 +38,9 @@ builder.Services.AddOpenTelemetry().UseAzureMonitor();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 builder.Services.AddSwaggerGen(c => {
+    c.OperationFilter<SwaggerDefaultValues>();
     c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -59,6 +64,13 @@ builder.Services.AddSwaggerGen(c => {
                 }
             });
 });
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new Asp.Versioning.ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+}).AddApiExplorer();
 
 builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 {
@@ -79,7 +91,8 @@ builder.Services.AddAuthentication("BasicAuthentication")
 
 var app = builder.Build();
 
-app.Logger.LogInformation("HELLLLLLLLO");
+app.UseDeveloperExceptionPage();
+
 //var logger = (ILogger<Program>?)app.Services.GetService(typeof(ILogger<Program>));
 //logger.LogWarning("We're in the program");
 //var connectionString = builder.Configuration.GetConnectionString("BeepTrackerConnection");
@@ -89,8 +102,13 @@ app.Logger.LogInformation("HELLLLLLLLO");
 //if (app.Environment.IsDevelopment())
 //{
 app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("../swagger/v1/swagger.json", "My API V1");
+    // c.RoutePrefix = string.Empty;
+});
 //}
+
 
 app.UseHttpsRedirection();
 

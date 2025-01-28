@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using BeepTracker.Api.Dtos;
 using BeepTracker.Api.Lookups;
 using BeepTracker.Api.Models;
@@ -8,9 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BeepTracker.Api.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/[controller]")]
     [Authorize]
+    [ApiVersion("1.0")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class BirdController : ControllerBase
     {
         private readonly BeepTrackerDbContext _beepTrackerDbContext;

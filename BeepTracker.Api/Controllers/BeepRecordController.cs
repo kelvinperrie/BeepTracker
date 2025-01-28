@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
 using BeepTracker.Api.Dtos;
 using BeepTracker.Api.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +10,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BeepTracker.Api.Controllers
 {
+    [Route("api/v{version:apiVersion}/[controller]")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ApiVersion("1.0")]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class BeepRecordController : ControllerBase
     {
         private readonly BeepTrackerDbContext _beepTrackerDbContext;
@@ -19,7 +23,7 @@ namespace BeepTracker.Api.Controllers
         private readonly ILogger<BeepRecordController> _logger;
 
         public BeepRecordController(BeepTrackerDbContext beepTrackerDbContext, IMapper mapper,
-            ILogger<BeepRecordController> logger) 
+            ILogger<BeepRecordController> logger)
         {
             _beepTrackerDbContext = beepTrackerDbContext;
             _mapper = mapper;
@@ -52,7 +56,8 @@ namespace BeepTracker.Api.Controllers
         [HttpGet("GetByClientGeneratedKey/{key}")]
         public async Task<ActionResult<BeepRecordDto>> GetByClientGeneratedKey(string key)
         {
-            try {
+            try
+            {
                 _logger.LogDebug($"Received request to get beep record by client generated key {key}");
                 var record = await _beepTrackerDbContext.BeepRecords.Where(b => b.ClientGeneratedKey == key).Include(b => b.BeepEntries).SingleOrDefaultAsync();
                 if (record is null)
@@ -63,7 +68,7 @@ namespace BeepTracker.Api.Controllers
                 var recordDto = _mapper.Map<BeepRecordDto>(record);
                 _logger.LogDebug($"Returning record for key {key}, record is {recordDto}");
                 return recordDto;
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error while getting beep record by client generated key of {key}");
