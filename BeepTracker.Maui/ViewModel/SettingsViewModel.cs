@@ -182,13 +182,18 @@ namespace BeepTracker.Maui.ViewModel
 
             try
             {
+                _logger.LogInformation("About to attempt to get birds");
                 IsBusy = true;
 
                 _clientService.SetUsernameAndPassword(ApiUsername, ApiPassword);
+                _logger.LogInformation("Calling getbirds via API service");
                 var birds = await _clientService.GetBirds();
 
                 if (Birds.Any())
+                {
+                    _logger.LogInformation($"Retrieved {Birds.Count()} birds from API");
                     Birds.Clear();
+                }
 
                 foreach (var record in birds)
                 {
@@ -202,6 +207,7 @@ namespace BeepTracker.Maui.ViewModel
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error while getting birds");
                 await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
             }
             finally

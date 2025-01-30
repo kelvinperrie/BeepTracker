@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace BeepTracker.ApiClient.IoC
             services.AddSingleton(provider =>
             {
                 var options = provider.GetRequiredService<IOptions<ClientOptions>>().Value;
-                return new ClientService(options);
+                var logger = provider.GetRequiredService<ILogger<ClientService>>();
+                return new ClientService(options, logger);
             });
         }
     }
