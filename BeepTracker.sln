@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.ApiClient", "Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.ApiClientConsole", "BeepTracker.ApiClientConsole\BeepTracker.ApiClientConsole.csproj", "{66CAB771-E9B0-46E3-A498-FC54F908FACC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeepTracker.Blazor", "BeepTracker.Blazor\BeepTracker.Blazor.csproj", "{4BAA4749-ABED-4E79-847F-5E79CD044FDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.Blazor", "BeepTracker.Blazor\BeepTracker.Blazor.csproj", "{4BAA4749-ABED-4E79-847F-5E79CD044FDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeepTracker.Common", "BeepTracker.Common\BeepTracker.Common.csproj", "{087364E9-395A-47AA-85D6-95876FB05BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeepTracker.Common", "BeepTracker.Common\BeepTracker.Common.csproj", "{087364E9-395A-47AA-85D6-95876FB05BF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
