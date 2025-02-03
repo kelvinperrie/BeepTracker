@@ -17,7 +17,7 @@ namespace BeepTracker.ApiClient
     {
         ILogger<ClientService> _logger;
 
-        private readonly HttpClient _httpClient;
+        private HttpClient _httpClient;
         private string _username;
         private string _password;
 
@@ -58,14 +58,17 @@ namespace BeepTracker.ApiClient
             try
             {
                 uri = new System.Uri(baseAddress);
+                // this will only work if a request hasn't been sent ... to avoid that we recreate the object
+                _httpClient = new HttpClient();
+                _httpClient.BaseAddress = uri;
             }
             catch(Exception ex)
             {
-                _logger.LogError(ex, "Error while setting base address in API client service");
+                _logger.LogError(ex, $"Error while setting base address in API client service; tried to set it to value of {baseAddress}");
             }
             finally
             {
-                _httpClient.BaseAddress = uri;
+                
             }
         }
 

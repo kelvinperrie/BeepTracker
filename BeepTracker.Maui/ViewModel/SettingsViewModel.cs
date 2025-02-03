@@ -67,6 +67,7 @@ namespace BeepTracker.Maui.ViewModel
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     _settingsService.ApiBasePath = _apiBasePath;
+                    _clientService.SetBaseAddress(_apiBasePath);
                 }
             }
         }
