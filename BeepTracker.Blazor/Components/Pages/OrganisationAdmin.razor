@@ -1,4 +1,5 @@
 ﻿@page "/organisations"
+@using MudBlazor
 @inject ILogger<OrganisationAdmin> Logger
 @inject IOrganisationService OrganisationService
 @inject ISnackbar SnackbarService
@@ -17,13 +18,6 @@
     <Columns>
         <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" />
         <PropertyColumn Property="x => x.Name" Title="Name" Editable="true" />
-        @* <TemplateColumn CellClass="d-flex justify-end">
-            <CellTemplate>
-                <NavLink class="nav-link" href="birds" >
-                    <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> birds
-                </NavLink>
-            </CellTemplate>
-        </TemplateColumn> *@
         <TemplateColumn>
             <HeaderTemplate>Birds</HeaderTemplate>
             <CellTemplate>
