@@ -2,7 +2,7 @@
 using AutoMapper;
 using BeepTracker.Api.Dtos;
 using BeepTracker.Api.Lookups;
-using BeepTracker.Api.Models;
+using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,6 @@ namespace BeepTracker.Api.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<BirdDto>> Get()
         {
-            // todo - will probably need to limit this based on active or status etc
             try
             {
                 _logger.LogDebug("Request recieved to get bird list");

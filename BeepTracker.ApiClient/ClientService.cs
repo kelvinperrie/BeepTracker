@@ -106,7 +106,7 @@ namespace BeepTracker.ApiClient
         public async Task<BeepRecord?> GetByClientGeneratedKey(string key)
         {
             _logger.LogDebug($"Request to GetByClientGeneratedKey recieved");
-            var res = await _httpClient.GetAsync($"/api/GetByClientGeneratedKey/{key}");
+            var res = await _httpClient.GetAsync($"/api/BeepRecord/GetByClientGeneratedKey/{key}");
             if (res.StatusCode == HttpStatusCode.NoContent) {
                 // this happens if we didn't find the item
                 return null;

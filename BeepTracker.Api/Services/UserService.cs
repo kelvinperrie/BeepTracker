@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using BeepTracker.Api.Controllers;
-using BeepTracker.Api.Models;
+using BeepTracker.Common.Models;
 
 namespace BeepTracker.Api.Services
 {

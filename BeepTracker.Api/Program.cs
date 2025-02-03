@@ -1,4 +1,4 @@
-using BeepTracker.Api.Models;
+using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Azure.Monitor.OpenTelemetry.AspNetCore;

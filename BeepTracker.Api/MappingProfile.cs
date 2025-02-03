@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Azure;
 using BeepTracker.Api.Dtos;
-using BeepTracker.Api.Models;
+using BeepTracker.Common.Models;
 
 namespace BeepTracker.Api
 {

@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using BeepTracker.Api.Dtos;
-using BeepTracker.Api.Models;
+using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
