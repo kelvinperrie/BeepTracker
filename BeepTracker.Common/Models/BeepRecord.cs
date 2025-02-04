@@ -27,7 +27,13 @@ public partial class BeepRecord
 
     public long Status { get; set; }
 
+    public int? UserId { get; set; }
+
+    public DateTime? DateSaved { get; set; }
+
     public virtual ICollection<BeepEntry> BeepEntries { get; set; } = new List<BeepEntry>();
 
     public virtual Bird Bird { get; set; } = null!;
+
+    public virtual User? User { get; set; }
 }

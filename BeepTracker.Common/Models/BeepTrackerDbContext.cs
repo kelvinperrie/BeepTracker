@@ -53,11 +53,16 @@ public partial class BeepTrackerDbContext : DbContext
             entity.ToTable("BeepRecord");
 
             entity.Property(e => e.BeatsPerMinute).HasDefaultValue(0);
+            entity.Property(e => e.DateSaved).HasColumnType("timestamp without time zone");
 
             entity.HasOne(d => d.Bird).WithMany(p => p.BeepRecords)
                 .HasForeignKey(d => d.BirdId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("BirdIdFK");
+
+            entity.HasOne(d => d.User).WithMany(p => p.BeepRecords)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("UserIdFK");
         });
 
         modelBuilder.Entity<Bird>(entity =>

@@ -17,5 +17,7 @@ public partial class User
 
     public bool Active { get; set; }
 
+    public virtual ICollection<BeepRecord> BeepRecords { get; set; } = new List<BeepRecord>();
+
     public virtual Organisation Organisation { get; set; } = null!;
 }

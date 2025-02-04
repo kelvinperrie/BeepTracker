@@ -1,5 +1,6 @@
 ﻿using Azure.Core;
 using BeepTracker.Api.Services;
+using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
@@ -26,6 +27,7 @@ namespace BeepTracker.Api.Security
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             string? username = null;
+            User foundUser;
             try
             {
                 var authHeaderReq = Request.Headers["Authorization"];
@@ -39,8 +41,18 @@ namespace BeepTracker.Api.Security
                 var password = credentials.LastOrDefault();
 
                 // validate user against our database
-                if (!_userService.IsValidUser(username, password))
-                    throw new ArgumentException($"Invalid credentials for user {username}");
+                foundUser = _userService.GetUserByUsernameAndPassword(username, password);
+
+                if(foundUser == null)
+                {
+                    throw new Exception($"Attempting to connect with user ({username}) and password but could not find match in database");
+                }
+
+                if(foundUser.Active == false)
+                {
+                    throw new Exception($"Attempted connect with user {username}, but the user is not active");
+                }
+
             }
             catch (Exception ex)
             {
@@ -48,7 +60,8 @@ namespace BeepTracker.Api.Security
             }
 
             var claims = new[] {
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, username),
+                new Claim("User.Id", foundUser.Id.ToString())
             };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Security.Claims;
 
 namespace BeepTracker.Api.Controllers
 {
@@ -83,6 +84,22 @@ namespace BeepTracker.Api.Controllers
             {
                 _logger.LogDebug($"Received request to CREATE beep record of {beepRecord}");
                 var record = _mapper.Map<BeepRecord>(beepRecord);
+
+                // automatically add the user's id to the beep record
+                var claimsIdentity = User.Identity as ClaimsIdentity;
+                var userIdClaim = claimsIdentity?.FindFirst("user.id");
+                if(userIdClaim == null)
+                {
+                    throw new Exception("Unable to get user.id (user id in database) for user from claims - this should be being set automatically during authentication");
+                }
+                int userId;
+                if(!int.TryParse(userIdClaim.Value, out userId))
+                {
+                    throw new Exception($"Unable to convert user.id claim of {userIdClaim.Value} to an integer - it should be the id of the user in the database");
+                }
+                record.UserId = userId;
+                record.DateSaved = DateTime.Now;
+
                 await _beepTrackerDbContext.BeepRecords.AddAsync(record);
                 await _beepTrackerDbContext.SaveChangesAsync();
 

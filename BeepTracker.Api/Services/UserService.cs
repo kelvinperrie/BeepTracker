@@ -6,7 +6,7 @@ namespace BeepTracker.Api.Services
 {
     public interface IUserService
     {
-        bool IsValidUser(string username, string password);
+        User? GetUserByUsernameAndPassword(string username, string password);
     }
 
     public class UserService : IUserService
@@ -20,30 +20,18 @@ namespace BeepTracker.Api.Services
             _logger = logger;
         }
 
-        public bool IsValidUser(string username, string password)
+        public User? GetUserByUsernameAndPassword(string username, string password)
         {
-            _logger.LogDebug($"Request received to validate credentials for user {username}");
-
             var foundUser = _beepTrackerDbContext.Users.FirstOrDefault(u => u.Username == username && u.Password == password);
 
-            if (foundUser != null)
+            if(foundUser == null)
             {
-                if (foundUser.Active)
-                {
-                    return true;
-                }
-                else
-                {
-                    _logger.LogWarning($"User {username} attempted to connect but is inactive; connection is being rejected.");
-                }
-            }
-            else
-            {
-                _logger.LogWarning($"Unable to find a matching username and passowrd in database for {username}.");
+                _logger.LogWarning($"No matching user and password found when getting for {username}");
+                return null;
             }
 
-
-            return false;
+            return foundUser;
         }
+
     }
 }
