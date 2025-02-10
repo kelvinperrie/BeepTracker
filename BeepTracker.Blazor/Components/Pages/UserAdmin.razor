@@ -21,7 +21,7 @@
         <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" />
         <PropertyColumn Property="x => x.Name" Title="Name" Editable="true" />
         <PropertyColumn Property="x => x.Username" Title="Username" Editable="true" />
-        <PropertyColumn Property="x => x.Password" Title="Password" Editable="true" />
+        @* <PropertyColumn Property="x => x.Password" Title="Password" Editable="true" /> *@
         <PropertyColumn Property="x => x.Active" Title="Active" Editable="true">
             <EditTemplate Context="cellContext">
                 <MudCheckBox T="bool" Label="Active" @bind-Value="cellContext.Item.Active"></MudCheckBox>
@@ -36,17 +36,32 @@
                 </MudSelect> 
             </EditTemplate>
         </PropertyColumn> *@
-@*         <TemplateColumn>
-            <HeaderTemplate>Beep Records</HeaderTemplate>
+        <TemplateColumn Context="cellContext">
+            <HeaderTemplate>Actions</HeaderTemplate>
             <CellTemplate>
-                <MudLink Href="@($"/beeprecords/{@context.Item.Id}")">view beep records</MudLink>
+                <MudButton OnClick="(() => OpenChangePasswordDialog(cellContext.Item))">Set password</MudButton>
             </CellTemplate>
-        </TemplateColumn> *@
+        </TemplateColumn>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="UserDto" />
     </PagerContent>
 </MudDataGrid>
+
+<MudDialog @bind-Visible="ChangePasswordDialogVisible">
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            Set password
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="EnteredPassword"></MudTextField>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="ChangePasswordCancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="ChangePasswordSubmit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
     [Parameter]
@@ -59,6 +74,47 @@
     DataGridFilterMode _filterMode = DataGridFilterMode.ColumnFilterMenu;
     DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive;
     private string _searchString;   // stores the value that the user is filtering the table on
+
+    bool ChangePasswordDialogVisible = false;
+    public string? EnteredPassword { get; set; } = null;
+    UserDto UserHavingPasswordUpdated { get; set; }
+
+    void ChangePasswordSubmit()
+    {
+        // update the password for UserHavingPasswordUpdated
+        var userId = UserHavingPasswordUpdated.Id;
+        ChangePasswordDialogVisible = false;
+    }
+    void ChangePasswordCancel()
+    {
+        ChangePasswordDialogVisible = false;
+    }
+
+    private async Task OpenChangePasswordDialog(UserDto userDto)
+    {
+        UserHavingPasswordUpdated = userDto;
+
+        DialogOptions dialogOptions = new DialogOptions() { CloseOnEscapeKey = true };
+
+        EnteredPassword = string.Empty;
+
+        ChangePasswordDialogVisible = true;
+
+        //SetPasswordDialog.ShowAsync("Set password", dialogOptions);
+
+        //Data dataToPass = new() { Name = "John", Age = 40 };
+        //DialogParameters dialogParamters = new()
+        //    {
+        //        ["PassedData"] = dataToPass
+        //    };
+        //var dialog = await DialogService.ShowAsync<CustomDialog>("Custom Dialog", dialogParamters, dialogOptions);
+        //var result = await dialog.Result;
+        //if (!result.Canceled)
+        //{
+        //    var returnedData = await dialog.GetReturnValueAsync<Data>();
+        //    _returnedData = returnedData;
+        //}
+    }
 
     protected override async Task OnInitializedAsync()
     {
