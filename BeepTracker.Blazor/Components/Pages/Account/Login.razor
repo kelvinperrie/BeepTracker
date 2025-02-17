@@ -1,0 +1,94 @@
+﻿@page "/account/login"
+
+@using BeepTracker.Blazor.ViewModels
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Identity
+
+@inject NavigationManager navigationManager
+
+@* @inject SignInManager<ApplicationUser> SignInManager *@
+
+<div class="row">
+    <div class="col-lg-4 offset-lg-4 pt-4 pb-4 border">
+        <EditForm Model="@Model" OnValidSubmit="Authenticate" FormName="LoginForm">
+            <DataAnnotationsValidator />
+            <div class="mb-3 text-center flex-column">
+                <img src="/images/avatar.png" style="max-height:5rem;" />
+                <h3>LOGIN</h3>
+            </div>
+            <div class="mb-3">
+                <label>User Name</label>
+                <InputText @bind-Value="Model.UserName" class="form-control" placeholder="Username" />
+                <ValidationMessage For="() => Model.UserName" />
+            </div>
+            <div class="mb-3">
+                <label>Password</label>
+                <InputText @bind-Value="Model.Password" class="form-control" placeholder="Password" type="password" />
+                <ValidationMessage For="() => Model.Password" />
+            </div>
+            <div class="mb-3 text-center">
+                <span class="text-danger">@errorMessage</span>
+            </div>
+            <div class="mb-3 d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    public LoginViewModel Model { get; set; } = new();
+
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // todo null httpcontext sometimes
+        // I don't know why the httpContext is sometimes null - the page should not be running in interaction server mode, and works correctly once refreshed
+        if (HttpContext == null)
+        {
+            navigationManager.NavigateTo("/account/login", true);
+        }
+    }
+
+    private async Task Authenticate()
+    {
+        if(Model.UserName != "Cool")
+        {
+            errorMessage = "That is not a cool user";
+            return;
+        }
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, Model.UserName),
+            new Claim(ClaimTypes.Role, "cool dude"),
+        };
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        //await httpContext.SignInAsync(principal);
+
+        await HttpContext.SignInAsync(principal);
+
+        //var currentUser = AuthService.CurrentUser;
+
+        // var identity = new ClaimsIdentity(
+        //     [
+        //         new Claim(ClaimTypes.Name, userIdentifier),
+        // ],
+        //     "Custom Authentication");
+
+        // var newUser = new ClaimsPrincipal(identity);
+
+        //AuthService.CurrentUser = principal;
+
+        navigationManager.NavigateTo("/");
+    }
+}
