@@ -1,10 +1,11 @@
 ﻿@page "/organisations"
 @using MudBlazor
+@using System.Linq
 @inject ILogger<OrganisationAdmin> Logger
 @inject IOrganisationService OrganisationService
 @inject ISnackbar SnackbarService
 @inject Microsoft.AspNetCore.Components.NavigationManager navigationManager
-
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
 <MudDataGrid @ref="dataGrid" Items="@Organisations" T="OrganisationDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
@@ -45,12 +46,30 @@
     {
         try
         {
-            Organisations = OrganisationService.GetAll().OrderBy(o => o.Name);
-            Logger.LogInformation($"We got {Organisations.Count()} organisations for display");
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
 
+            if (user.Identity == null || !user.Identity.IsAuthenticated)
+            {
+                navigationManager.NavigateTo("/account/login");
+            }
+
+            var claims = user.Claims;
+
+            var usernameClaim = user.FindFirst("Username");
+
+            if (usernameClaim != null)
+            {
+                Organisations = OrganisationService.GetAllByUsername(usernameClaim.Value).OrderBy(o => o.Name);
+                Logger.LogInformation($"We got {Organisations.Count()} organisations for display");
+
+            } else
+            {
+                throw new Exception("Unable to get Username claim from logged in user's claims");
+            }
             // var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             // var user = authstate.User;
-            // name = user?.Identity?.Name ?? "Unknown user";
+                // name = user?.Identity?.Name ?? "Unknown user";
         }
         catch (Exception ex)
         {

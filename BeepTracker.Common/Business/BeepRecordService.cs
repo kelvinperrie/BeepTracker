@@ -2,10 +2,9 @@
 using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
 using Microsoft.EntityFrameworkCore;
-using static MudBlazor.CategoryTypes;
 
 
-namespace BeepTracker.Blazor.Business
+namespace BeepTracker.Common.Business
 {
 
     public interface IBeepRecordService

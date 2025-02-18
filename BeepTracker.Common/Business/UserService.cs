@@ -2,10 +2,9 @@
 using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
 using Microsoft.EntityFrameworkCore;
-using static MudBlazor.CategoryTypes;
+using Microsoft.Extensions.Logging;
 
-
-namespace BeepTracker.Blazor.Business
+namespace BeepTracker.Common.Business
 {
 
     public interface IUserService
@@ -13,17 +12,20 @@ namespace BeepTracker.Blazor.Business
         IEnumerable<UserDto> GetAllForOrganisation(int organisationId);
         void Update(UserDto organisation);
         UserDto? GetById(int id);
+        User? GetUserByUsernameAndPassword(string username, string password);
     }
 
     public class UserService : IUserService
     {
+        private readonly ILogger _logger;
         private readonly IMapper _mapper;
         public readonly BeepTrackerDbContext _context;
 
-        public UserService(BeepTrackerDbContext context, IMapper mapper)
+        public UserService(BeepTrackerDbContext context, IMapper mapper, ILogger<UserService> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public IEnumerable<UserDto> GetAllForOrganisation(int organisationId)
@@ -50,6 +52,21 @@ namespace BeepTracker.Blazor.Business
                 _context.Add(updatedUser);
             }
             _context.SaveChanges();
+        }
+
+        public User? GetUserByUsernameAndPassword(string username, string password)
+        {
+            // todo we're going to have to hash this pw at some point
+            var hashedPassword = password;
+            var foundUser = _context.Users.FirstOrDefault(u => u.Username == username && u.Password == hashedPassword);
+
+            if (foundUser == null)
+            {
+                _logger.LogWarning($"No matching user and password found when getting for {username}");
+                return null;
+            }
+
+            return foundUser;
         }
 
     }

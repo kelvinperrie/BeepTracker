@@ -20,4 +20,6 @@ public partial class User
     public virtual ICollection<BeepRecord> BeepRecords { get; set; } = new List<BeepRecord>();
 
     public virtual Organisation Organisation { get; set; } = null!;
+
+    public virtual ICollection<OrganisationUserRole> OrganisationUserRoles { get; set; } = new List<OrganisationUserRole>();
 }

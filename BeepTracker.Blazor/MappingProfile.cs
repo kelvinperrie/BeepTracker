@@ -2,7 +2,7 @@
 using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
 
-namespace BeepTracker.Api
+namespace BeepTracker.Common
 {
     public class MappingProfile : Profile
     {
@@ -13,7 +13,9 @@ namespace BeepTracker.Api
             CreateMap<Bird, BirdDto>().ReverseMap();
             CreateMap<BirdStatus, BirdStatusDto>().ReverseMap();
             CreateMap<User, UserDto>().ReverseMap();
-            CreateMap<Organisation, OrganisationDto>().ReverseMap(); 
+            CreateMap<Organisation, OrganisationDto>().ReverseMap();
+            CreateMap<Role, RoleDto>().ReverseMap();
+            CreateMap<OrganisationUserRole, OrganisationUserRoleDto>().ReverseMap();
         }
     }
 }

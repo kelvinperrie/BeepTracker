@@ -7,6 +7,7 @@
 @using Microsoft.AspNetCore.Identity
 
 @inject NavigationManager navigationManager
+@inject IUserService userService
 
 @* @inject SignInManager<ApplicationUser> SignInManager *@
 
@@ -59,35 +60,24 @@
 
     private async Task Authenticate()
     {
-        if(Model.UserName != "Cool")
+        var foundUser = userService.GetUserByUsernameAndPassword(Model.UserName, Model.Password);
+        if(foundUser == null)
         {
-            errorMessage = "That is not a cool user";
+            errorMessage = "Unable to login, please check user name and password.";
             return;
         }
 
         var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.Name, Model.UserName),
+            new Claim(ClaimTypes.Name, foundUser.Name),
+            new Claim("Username", foundUser.Username),
+            new Claim("Id", foundUser.Id.ToString()),
             new Claim(ClaimTypes.Role, "cool dude"),
         };
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
-        //await httpContext.SignInAsync(principal);
-
         await HttpContext.SignInAsync(principal);
-
-        //var currentUser = AuthService.CurrentUser;
-
-        // var identity = new ClaimsIdentity(
-        //     [
-        //         new Claim(ClaimTypes.Name, userIdentifier),
-        // ],
-        //     "Custom Authentication");
-
-        // var newUser = new ClaimsPrincipal(identity);
-
-        //AuthService.CurrentUser = principal;
 
         navigationManager.NavigateTo("/");
     }

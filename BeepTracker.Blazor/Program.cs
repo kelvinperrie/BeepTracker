@@ -1,5 +1,5 @@
 using AutoMapper;
-using BeepTracker.Blazor.Business;
+using BeepTracker.Common.Business;
 using BeepTracker.Blazor.Components;
 using BeepTracker.Common.Models;
 using BeepTracker.Common.Dtos;
