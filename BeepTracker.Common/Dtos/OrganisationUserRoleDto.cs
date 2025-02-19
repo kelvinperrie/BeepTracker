@@ -17,5 +17,6 @@ namespace BeepTracker.Common.Dtos
 
         public bool Active { get; set; }
 
+        public RoleDto Role { get; set; }
     }
 }

@@ -8,7 +8,7 @@
 <h3>Users for @Organisation.Name</h3>
 
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateNewHandler">Make new!</MudButton>
-<MudDataGrid @ref="dataGrid" Items="@Users" T="UserDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
+<MudDataGrid @ref="dataGrid" Items="@Users" T="OrganisationUserDto" QuickFilter="@_quickFilter" ReadOnly="false" EditMode="DataGridEditMode.Form"
             CommittedItemChanges="@CommittedItemChanges" EditTrigger="DataGridEditTrigger.OnRowClick"
             Filterable=" true" FilterMode="@_filterMode" FilterCaseSensitivity="@_caseSensitivity" >
     <ToolBarContent>
@@ -22,6 +22,15 @@
         <PropertyColumn Property="x => x.Name" Title="Name" Editable="true" />
         <PropertyColumn Property="x => x.Username" Title="Username" Editable="true" />
         @* <PropertyColumn Property="x => x.Password" Title="Password" Editable="true" /> *@
+        <PropertyColumn Property="x => x.Role.RoleName" Title="Role" Editable="true">
+            <EditTemplate>
+                <MudSelect @bind-Value="context.Item.Role.Id" Required RequiredError="You must select a role" Margin="@Margin.Dense">
+                    @* //todo make this dynamic *@
+                    <MudSelectItem Value="2">Oranisation Admin</MudSelectItem>
+                    <MudSelectItem Value="3">User</MudSelectItem>
+                </MudSelect>
+            </EditTemplate>
+        </PropertyColumn>
         <PropertyColumn Property="x => x.Active" Title="Active" Editable="true">
             <EditTemplate Context="cellContext">
                 <MudCheckBox T="bool" Label="Active" @bind-Value="cellContext.Item.Active"></MudCheckBox>
@@ -44,7 +53,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="UserDto" />
+        <MudDataGridPager T="OrganisationUserDto" />
     </PagerContent>
 </MudDataGrid>
 
@@ -69,20 +78,26 @@
     public int OrganisationId { get; set; }
 
     public OrganisationDto Organisation { get; set; }
-    public IEnumerable<UserDto> Users = new List<UserDto>();
-    private MudDataGrid<UserDto> dataGrid;
+    public IEnumerable<OrganisationUserDto> Users = new List<OrganisationUserDto>();
+    private MudDataGrid<OrganisationUserDto> dataGrid;
     DataGridFilterMode _filterMode = DataGridFilterMode.ColumnFilterMenu;
     DataGridFilterCaseSensitivity _caseSensitivity = DataGridFilterCaseSensitivity.CaseInsensitive;
     private string _searchString;   // stores the value that the user is filtering the table on
 
     bool ChangePasswordDialogVisible = false;
     public string? EnteredPassword { get; set; } = null;
-    UserDto UserHavingPasswordUpdated { get; set; }
+    OrganisationUserDto UserHavingPasswordUpdated { get; set; }
 
     void ChangePasswordSubmit()
     {
         // update the password for UserHavingPasswordUpdated
+        if(string.IsNullOrEmpty(EnteredPassword))
+        {
+            return;
+        }
         var userId = UserHavingPasswordUpdated.Id;
+        UserService.SetPassword(userId, EnteredPassword);
+        EnteredPassword = string.Empty;
         ChangePasswordDialogVisible = false;
     }
     void ChangePasswordCancel()
@@ -90,7 +105,7 @@
         ChangePasswordDialogVisible = false;
     }
 
-    private async Task OpenChangePasswordDialog(UserDto userDto)
+    private async Task OpenChangePasswordDialog(OrganisationUserDto userDto)
     {
         UserHavingPasswordUpdated = userDto;
 
@@ -136,7 +151,7 @@
         }
     }
 
-    private Func<UserDto, bool> _quickFilter => x =>
+    private Func<OrganisationUserDto, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
@@ -153,11 +168,11 @@
         return false;
     };
 
-    void CommittedItemChanges(UserDto item)
+    void CommittedItemChanges(OrganisationUserDto item)
     {
         try
         {
-            UserService.Update(item);
+            UserService.Update(item, OrganisationId);
 
             Logger.LogInformation($"Updated user! The new info is {item}");
         }
@@ -173,9 +188,13 @@
     /// </summary>
     public void CreateNewHandler()
     {
-        var newUser = new UserDto
+        var newUser = new OrganisationUserDto
         {
-            OrganisationId = OrganisationId
+            OrganisationId = OrganisationId,
+            Role = new RoleDto 
+            {
+                Id = 3 // todo fix me, lookup/enum
+            }
         };
         dataGrid.SetEditingItemAsync(newUser);
     }

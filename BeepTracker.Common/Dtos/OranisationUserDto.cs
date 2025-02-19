@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BeepTracker.Common.Dtos;
 
-public partial class UserDto
+public partial class OrganisationUserDto
 {
     public int Id { get; set; }
 
@@ -13,12 +13,8 @@ public partial class UserDto
 
     public string Username { get; set; } = null!;
 
-    public string Password { get; set; } = null!;
-
     public bool Active { get; set; }
 
-    //public virtual ICollection<OrganisationUserRoleDto> OrganisationUserRoles { get; set; } = new List<OrganisationUserRoleDto>();
-
-    //public virtual RoleDto Role { get; set; }
+    public virtual RoleDto Role { get; set; }
 
 }

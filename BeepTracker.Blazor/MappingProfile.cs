@@ -16,6 +16,7 @@ namespace BeepTracker.Common
             CreateMap<Organisation, OrganisationDto>().ReverseMap();
             CreateMap<Role, RoleDto>().ReverseMap();
             CreateMap<OrganisationUserRole, OrganisationUserRoleDto>().ReverseMap();
+            CreateMap<User, OrganisationUserDto>().ReverseMap();
         }
     }
 }
