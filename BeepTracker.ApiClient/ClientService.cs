@@ -72,10 +72,10 @@ namespace BeepTracker.ApiClient
             }
         }
 
-        public async Task<List<Bird>> GetBirds()
+        public async Task<List<Bird>> GetBirds(int organisationId)
         {
             _logger.LogDebug($"Request to GetBirds recieved");
-            var res = await _httpClient.GetAsync($"/api/Bird");
+            var res = await _httpClient.GetAsync($"/api/Bird/Get/{organisationId}");
             if (!res.IsSuccessStatusCode)
             {
                 var error = res.ReasonPhrase + " - " + res.Content.ReadAsStringAsync().Result;
@@ -88,6 +88,25 @@ namespace BeepTracker.ApiClient
                 birds = birds ?? new List<Bird>();
                 _logger.LogDebug($"Returning {birds.Count} birds");
                 return birds;
+            }
+        }
+
+        public async Task<List<Organisation>> GetOrganisations()
+        {
+            _logger.LogDebug($"Request to GetOrganisations recieved");
+            var res = await _httpClient.GetAsync($"/api/Organisation");
+            if (!res.IsSuccessStatusCode)
+            {
+                var error = res.ReasonPhrase + " - " + res.Content.ReadAsStringAsync().Result;
+                _logger.LogError("Error occurred while getting organisations: " + error);
+                throw new Exception(error);
+            }
+            else
+            {
+                var organisations = await res.Content.ReadFromJsonAsync<List<Organisation>>();
+                organisations = organisations ?? new List<Organisation>();
+                _logger.LogDebug($"Returning {organisations.Count} organisations");
+                return organisations;
             }
         }
 

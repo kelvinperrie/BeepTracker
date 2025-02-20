@@ -14,6 +14,7 @@ namespace BeepTracker.Common.Business
         void Update(UserDto organisation);
         void Update(OrganisationUserDto user, int organisationId);
         UserDto? GetById(int id);
+        UserDto? GetByUsername(string username);
         User? GetUserByUsernameAndPassword(string username, string password);
         void SetPassword(int userId, string password);
 
@@ -52,6 +53,14 @@ namespace BeepTracker.Common.Business
         public UserDto? GetById(int id)
         {
             var user = _context.Users.FirstOrDefault(b => b.Id == id);
+            return _mapper.Map<UserDto>(user);
+        }
+        public UserDto? GetByUsername(string username)
+        {
+            var user = _context.Users
+                .Include(u => u.OrganisationUserRoles)
+                .ThenInclude(u => u.Role)
+                .FirstOrDefault(b => b.Username == username);
             return _mapper.Map<UserDto>(user);
         }
 

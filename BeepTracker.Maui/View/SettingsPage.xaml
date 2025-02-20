@@ -39,42 +39,64 @@
 
             <Label Style="{StaticResource MediumLabel}" Text="API Password:" Padding="0,10,0,0" />
             <Entry Text="{Binding ApiPassword, Mode=TwoWay}"/>
-            
+
+            <Label Style="{StaticResource MediumLabel}" Text="Organisation:" Padding="0,10,0,0" />
+            <Picker x:Name="picker" ItemsSource="{Binding OrganisationListFromDatabase, Mode=TwoWay}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedIndex="{Binding CurrentOrganisationIndex, Mode=TwoWay}"
+                IsVisible="{Binding SyncToDatabaseActive}">
+            </Picker>
+
             <BoxView Style="{StaticResource Separator}" />
             <Grid
                 HorizontalOptions="Fill"
                 ColumnDefinitions="*,Auto"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                 <Label Style="{StaticResource MediumLabel}" Text="Local data" Padding="0,10,0,0"
                        Grid.Row="0" Grid.Column="0" />
 
-                <Label Text="Use this to see what bird list this device has."
+
+                <Label Text="Use this to view the organisations list this device knows about (that you below too)."
                     Grid.Row="1" Grid.Column="0"/>
+                <Button HorizontalOptions="End" VerticalOptions="Center"
+                    Command="{Binding ViewOrganisationsCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Text="View Organisation List" Grid.Row="1" Grid.Column="1" />
+                
+                <Label Text="Use this to get the organisation data that you below too. Requires connectivity to connect to the database."
+                    Grid.Row="2" Grid.Column="0"/>
+                <Button HorizontalOptions="End" VerticalOptions="Center"
+                    Command="{Binding GetOrganisationsCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    Text="Update Organisation List" Grid.Row="2" Grid.Column="1" />
+                
+                <Label Text="Use this to see what bird list this device has."
+                    Grid.Row="3" Grid.Column="0"/>
                 <Button HorizontalOptions="End" VerticalOptions="Center"
                     Command="{Binding ViewBirdsCommand}"
                     IsEnabled="{Binding IsNotBusy}"
-                    Text="View Bird List" Grid.Row="1" Grid.Column="1" />
+                    Text="View Bird List" Grid.Row="3" Grid.Column="1" />
 
-                <Label Text="Use this to refresh the list of birds. Requires connectivity to connect to the database."
-                    Grid.Row="2" Grid.Column="0"/>
+                <Label Text="Use this to refresh the list of birds. You must have already got organisation data before doing this."
+                    Grid.Row="4" Grid.Column="0"/>
                 <Button HorizontalOptions="End" VerticalOptions="Center"
                     Command="{Binding GetBirdsCommand}"
                     IsEnabled="{Binding IsNotBusy}"
-                    Text="Update Bird List" Grid.Row="2" Grid.Column="1" />
+                    Text="Update Bird List" Grid.Row="4" Grid.Column="1" />
                 
                 <Label Text="Create a compressed archive of all the beep records on this device - can be used to help with troubleshooting."
-                    Grid.Row="3" Grid.Column="0"/>
+                    Grid.Row="5" Grid.Column="0"/>
                 <Button x:Name="ShareLogs"  HorizontalOptions="End" VerticalOptions="Center"
                     IsEnabled="{Binding IsNotBusy}"
                     Text="Export Beep Records"
-                    Clicked="OnShareBeepRecordsClicked" Grid.Row="3" Grid.Column="1"/>
+                    Clicked="OnShareBeepRecordsClicked" Grid.Row="5" Grid.Column="1"/>
 
                 <Label Text="Use this to upload local records to the remote database. When I get around to it this is going to be on the home page."
-                    Grid.Row="4" Grid.Column="0"/>
+                    Grid.Row="6" Grid.Column="0"/>
                 <Button HorizontalOptions="End" VerticalOptions="Center"
-                    Margin="0,4"
+                    IsEnabled="{Binding IsNotBusy}"
                     Command="{Binding SyncRecordsCommand}"
-                    Text="Sync Records" Grid.Row="4" Grid.Column="1" />
+                    Text="Sync Records" Grid.Row="6" Grid.Column="1" />
             </Grid>
             
             

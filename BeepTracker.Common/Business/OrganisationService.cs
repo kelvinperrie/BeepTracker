@@ -40,8 +40,6 @@ namespace BeepTracker.Common.Business
             var organisationDtos = organisations.Select(o => _mapper.Map<OrganisationDto>(o));
             return organisationDtos;
 
-            //var organisations = _context.Organisations.Where(o => o.OrganisationUserRoles)
-            //return _context.Organisations.Select(o => _mapper.Map<OrganisationDto>(o));
         }
 
         public OrganisationDto? GetById(int id)

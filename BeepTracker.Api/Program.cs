@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication;
 using BeepTracker.Api.Security;
-using BeepTracker.Api.Services;
+using BeepTracker.Common.Business;
 using Asp.Versioning;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -81,6 +81,8 @@ builder.Services.AddDbContext<BeepTrackerDbContext>(x =>
 
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<IOrganisationService, OrganisationService>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Logging
     .SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Debug);

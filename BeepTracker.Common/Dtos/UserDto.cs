@@ -17,7 +17,7 @@ public partial class UserDto
 
     public bool Active { get; set; }
 
-    //public virtual ICollection<OrganisationUserRoleDto> OrganisationUserRoles { get; set; } = new List<OrganisationUserRoleDto>();
+    public virtual ICollection<OrganisationUserRoleDto> OrganisationUserRoles { get; set; } = new List<OrganisationUserRoleDto>();
 
     //public virtual RoleDto Role { get; set; }
 

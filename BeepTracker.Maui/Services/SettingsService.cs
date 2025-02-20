@@ -13,8 +13,11 @@ namespace BeepTracker.Maui.Services
         string ApiUsername { get; set; }
         string ApiPassword { get; set; }
         string BirdListJson { get; set; }
+        string OrganisationListJson { get; set; }
         bool AttemptToSyncRecords { get; set; }
+        int CurrentOrganisationId { get; set; }
         List<Bird> BirdListFromDatabase { get; }
+        List<Organisation> OrganisationListFromDatabase { get; }
     }
 
     public sealed class SettingsService : ISettingsService
@@ -28,8 +31,14 @@ namespace BeepTracker.Maui.Services
         private const string apiPassword = "api_password";
         private const string apiPasswordDefault = "";
 
+        private const string currentOrganisationId = "current_organisation_id";
+        private const string currentOrganisationIdDefault = "-1";
+
         private const string birdListJson = "bird_list";
         private const string birdListJsonDefault = "";
+
+        private const string organisationListJson = "organisation_list";
+        private const string organisationListJsonDefault = "";
 
         private const string attemptToSyncRecords = "attempt_to_sync_records";
         private const bool attemptToSyncRecordsDefault = false;
@@ -49,6 +58,11 @@ namespace BeepTracker.Maui.Services
             get => Preferences.Get(apiPassword, apiPasswordDefault);
             set => Preferences.Set(apiPassword, value);
         }
+        public int CurrentOrganisationId
+        {
+            get => Preferences.Get(currentOrganisationId, int.Parse(currentOrganisationIdDefault));
+            set => Preferences.Set(currentOrganisationId, value);
+        }
 
         // a serialized list of birds that exist in our database (i.e. birds that can have beeprecords recorded)
         public string BirdListJson
@@ -62,12 +76,33 @@ namespace BeepTracker.Maui.Services
         {
             get
             {
-                if(string.IsNullOrEmpty(BirdListJson))
+                if (string.IsNullOrEmpty(BirdListJson))
                 {
                     return new List<Bird>();
                 }
                 var birds = JsonSerializer.Deserialize<List<Bird>>(BirdListJson);
                 return birds ?? new List<Bird>();
+            }
+        }
+
+        // a serialized list of organisations that exist in our database that the current user belows too
+        public string OrganisationListJson
+        {
+            get => Preferences.Get(organisationListJson, organisationListJsonDefault);
+            set => Preferences.Set(organisationListJson, value);
+        }
+
+        // deserialize the list of organisations and present it as a property that can be retrieved
+        public List<Organisation> OrganisationListFromDatabase
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(OrganisationListJson))
+                {
+                    return new List<Organisation>();
+                }
+                var orgs = JsonSerializer.Deserialize<List<Organisation>>(OrganisationListJson);
+                return orgs ?? new List<Organisation>();
             }
         }
 

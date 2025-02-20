@@ -1,5 +1,5 @@
 ﻿using Azure.Core;
-using BeepTracker.Api.Services;
+using BeepTracker.Common.Business;
 using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;

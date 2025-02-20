@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
-using BeepTracker.Api.Dtos;
+using BeepTracker.Common.Dtos;
 using BeepTracker.Common.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -124,7 +124,8 @@ namespace BeepTracker.Api.Controllers
                 // this does not automatically remove/update beepentry child items, so every save we end up with duplicate beepentry records
                 // they get duplicated because we don't have an index with them on the device - so they come in with index = 0
                 // which means they get saved as new entries
-                // we'll manaully remove any existing ones
+                // potentially we could go through and update them based on their order, but it seems like a lot of hassle
+                // so every save we'll recreate them all - delete all beep entries and save all the ones we just got as new ones
                 var beepEntriesInDatabase = _beepTrackerDbContext.BeepEntries.Where(b => b.BeepRecordId == beepRecord.Id);
                 foreach (var beepEntry in beepEntriesInDatabase)
                 {

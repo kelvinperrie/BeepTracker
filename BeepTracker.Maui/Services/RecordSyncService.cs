@@ -98,11 +98,11 @@ namespace BeepTracker.Maui.Services
                         // do some validation?
                         if (remoteRecord.BirdId == 0)
                         {
-                            throw new Exception($"Record for {remoteRecord.BirdName} does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.");
+                            throw new Exception($"Record for '{remoteRecord.BirdName}' does not have a bird id associated with it - cannot upload it. Either attach the record to a bird (by selecting from the dropdown) or ensure the bird name in the record matches a name from the bird list on the settings page.");
                         }
                         if (string.IsNullOrEmpty(remoteRecord.ClientGeneratedKey))
                         {
-                            throw new Exception($"Record for {remoteRecord.BirdName}  does not have a client generated key so cannot be uploaded - not sure how that happens ...");
+                            throw new Exception($"Record for '{remoteRecord.BirdName}'  does not have a client generated key so cannot be uploaded - not sure how that happens ...");
                         }
 
                         _logger.LogInformation($"Asking API to SAVE beep record: {remoteRecord.ToString()}");

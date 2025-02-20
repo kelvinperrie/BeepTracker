@@ -29,11 +29,45 @@ namespace BeepTracker.Maui.ViewModel
         private string _apiPassword;
         private bool _attemptToSyncRecords;
         private string _birdListJson;
+        private string _organisationListJson;
 
+        // not sure why these are observablecollections rather than local vars?
         public ObservableCollection<Bird> Birds { get; } = new();
+        public ObservableCollection<Organisation> Organisations { get; } = new();
+
 
         [ObservableProperty]
         public string? connectivityValue;
+
+        // indicates the currently selected organisation id for the user - used to set the org in the organisation dropdown
+        [ObservableProperty]
+        private int currentOrganisationId = -1;
+
+        private int currentOrganisationIndex = -1;
+
+        public int CurrentOrganisationIndex
+        {
+            get
+            {
+                return currentOrganisationIndex;
+            }
+            set
+            {
+                if (currentOrganisationIndex != value)
+                {
+                    currentOrganisationIndex = value;
+                    var selectedOrganisation = OrganisationListFromDatabase.ElementAt(currentOrganisationIndex);
+                    _settingsService.CurrentOrganisationId = selectedOrganisation.Id;
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentOrganisationIndex"));
+                }
+            }
+        }
+
+
+        // holds a collections of organisations the user belongs too - used to populate the dropdown on the page
+        public ObservableCollection<Organisation> OrganisationListFromDatabase { get; } = new();
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public SettingsViewModel(ISettingsService settingsService, ClientService clientService, 
             RecordSyncService recordSyncService, IConnectivity connectivity, ILogger<SettingsViewModel> logger,
@@ -51,11 +85,18 @@ namespace BeepTracker.Maui.ViewModel
             _apiPassword = _settingsService.ApiPassword;
             _attemptToSyncRecords = _settingsService.AttemptToSyncRecords;
             _birdListJson = _settingsService.BirdListJson;
+            _organisationListJson = _settingsService.OrganisationListJson;
 
             _connectivity.ConnectivityChanged += OnConnectivityChanged;
             UpdateConnectivityStatus(_connectivity.NetworkAccess);
-        }
 
+            OrganisationListFromDatabase = new(_settingsService.OrganisationListFromDatabase);
+            currentOrganisationId = _settingsService.CurrentOrganisationId;
+            // based on the current organisation id, find that org in our list and figure out what it's index is, then set that as the index of the dropdown ...
+            var indexOfCurrentOrganisation = OrganisationListFromDatabase.ToList().FindIndex(o => o.Id == currentOrganisationId);
+            CurrentOrganisationIndex = indexOfCurrentOrganisation;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentOrganisationIndex"));
+        }
 
         public string ApiBasePath
         {
@@ -108,6 +149,15 @@ namespace BeepTracker.Maui.ViewModel
                 _settingsService.BirdListJson = _birdListJson;
             }
         }
+        public string OrganisationListJson
+        {
+            get => _organisationListJson;
+            set
+            {
+                _organisationListJson = value;
+                _settingsService.OrganisationListJson = _organisationListJson;
+            }
+        }
 
         private void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
@@ -127,6 +177,23 @@ namespace BeepTracker.Maui.ViewModel
 
             // will show the MetroLogPage by default
             logController.GoToLogsPageCommand.Execute(null);
+        }
+
+        /// <summary>
+        /// checks to see if we have the basic settings entered to connect to the web api, if not shows a dialog to the user
+        /// </summary>
+        /// <returns>whether settings to connect to web api are set</returns>
+        private async Task<bool> CanAttemptApiAccess()
+        {
+            if (string.IsNullOrEmpty(_settingsService.ApiBasePath)
+                || string.IsNullOrEmpty(_settingsService.ApiUsername)
+                || string.IsNullOrEmpty(_settingsService.ApiPassword))
+            {
+                await Shell.Current.DisplayAlert("Warning", "API base path, username, and password must be set", "OK");
+                return false;
+            }
+
+            return true;
         }
 
         [RelayCommand]
@@ -172,6 +239,64 @@ namespace BeepTracker.Maui.ViewModel
         }
 
         [RelayCommand]
+        public async Task GetOrganisations()
+        {
+            if (IsBusy)
+            {
+                await Shell.Current.DisplayAlert("Warning", "The page is already processing a request.", "OK");
+                return;
+            }
+
+            try
+            {
+                if (!await CanAttemptApiAccess()) return;
+
+                _logger.LogInformation("About to attempt to get organisations");
+                IsBusy = true;
+
+                _clientService.SetUsernameAndPassword(ApiUsername, ApiPassword);
+                _logger.LogInformation("Calling getorganisations via API service");
+                var orgs = await _clientService.GetOrganisations();
+
+                if (Organisations.Any())
+                {
+                    _logger.LogInformation($"Retrieved {orgs.Count()} organisations from API");
+                    Organisations.Clear();
+                }
+
+                foreach (var record in orgs)
+                {
+                    Organisations.Add(record);
+                }
+
+                var organisationsJson = JsonSerializer.Serialize(Organisations);
+                OrganisationListJson = organisationsJson;
+
+                // todo set the user's current organisation (they probably only have one anyway)
+
+                await Shell.Current.DisplayAlert("Done", $"Successfully updated the organisations list - we received {Organisations.Count} organisations.", "OK");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while getting organisations");
+                await Shell.Current.DisplayAlert("Error!", ex.Message, "OK");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        [RelayCommand]
+        public async Task ViewOrganisations()
+        {
+
+            var orgNames = String.Join(", ", _settingsService.OrganisationListFromDatabase.Select(b => b.Name));
+            var title = $"{_settingsService.OrganisationListFromDatabase.Count} organisation(s) found";
+            await Shell.Current.DisplayAlert(title, $"Organisations are: {orgNames}\nJson is: {OrganisationListJson}", "OK");
+        }
+
+        [RelayCommand]
         public async Task GetBirds()
         {
 
@@ -183,12 +308,23 @@ namespace BeepTracker.Maui.ViewModel
 
             try
             {
+
+                if (!await CanAttemptApiAccess()) return;
+
+                if (_settingsService.CurrentOrganisationId<=0)
+                {
+                    await Shell.Current.DisplayAlert("Warning", "Current organisation must be set before attempting to get birds", "OK");
+                    return;
+                }
+
+
                 _logger.LogInformation("About to attempt to get birds");
                 IsBusy = true;
 
                 _clientService.SetUsernameAndPassword(ApiUsername, ApiPassword);
-                _logger.LogInformation("Calling getbirds via API service");
-                var birds = await _clientService.GetBirds();
+                var organisationId = _settingsService.CurrentOrganisationId;
+                _logger.LogInformation($"Calling getbirds via API service for organisation with id {organisationId}");
+                var birds = await _clientService.GetBirds(organisationId);
 
                 if (Birds.Any())
                 {
