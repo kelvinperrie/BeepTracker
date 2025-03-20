@@ -44,25 +44,25 @@
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
@@ -73,25 +73,25 @@
 	  <PublishTrimmed>False</PublishTrimmed>
 	  <AndroidUseAapt2>True</AndroidUseAapt2>
 	  <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
 	  <ApplicationTitle>Beep Tracker</ApplicationTitle>
 	  <ApplicationId>nz.co.littlecormorant.beeptracker</ApplicationId>
-	  <ApplicationDisplayVersion>1.1</ApplicationDisplayVersion>
+	  <ApplicationDisplayVersion>1.2</ApplicationDisplayVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
