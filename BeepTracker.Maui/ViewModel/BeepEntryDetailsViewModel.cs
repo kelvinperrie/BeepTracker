@@ -195,9 +195,14 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
     {
         try
         {
-            // if we're saving and the status is uploaded or errored, then we need to change it to updated
-            // to indicate that something has changed
-            BeepRecord.UploadStatus = (int)BeepRecordUploadStatus.Updated;
+            // if we're attempting to sync records with the API then we change the status when the record is changed,
+            // if not, then we let the user set the status to whatever they want
+            if (_settingsService.AttemptToSyncRecords)
+            {
+                // if we're saving and the status is uploaded or errored, then we need to change it to updated
+                // to indicate that something has changed
+                BeepRecord.UploadStatus = (int)BeepRecordUploadStatus.Updated;
+            }
             _localPersistance.SaveBeepRecord(BeepRecord);
             Shell.Current.DisplayAlert("Save completed", "The beep record has been saved.", "OK");
         } catch (Exception ex)
@@ -290,6 +295,18 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
         UserHasEnteredDigitIntoSelectedBeepEntry = false;
         // scroll horizontally so that the beep entries are always in view
         MyPage.ScrollToBeepEntry(beepRecord.BeepEntries[SelectedBeepEntryIndex]);
+    }
+
+    [RelayCommand]
+    public void UpdateTimeSetNow()
+    {
+        BeepRecord.RecordedDateTime = DateTime.Now;
+    }
+
+    [RelayCommand]
+    public void UpdateTimeMinusFive()
+    {
+        BeepRecord.RecordedDateTime = BeepRecord.RecordedDateTime.AddMinutes(-5);
     }
 
     [RelayCommand]

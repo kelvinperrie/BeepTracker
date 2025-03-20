@@ -92,6 +92,50 @@
                 </Border>
             </HorizontalStackLayout>
 
+
+            <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
+            <HorizontalStackLayout >
+                <DatePicker  Format="dd/MM/yyyy"
+                Date="{Binding BeepRecord.RecordedDate}" />
+                <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
+                <Button
+                    Margin="4,0"
+                    Command="{Binding UpdateTimeSetNowCommand}"
+                    Text="Set Now" />
+                <Button
+                    Margin="4,0"
+                    Command="{Binding UpdateTimeMinusFiveCommand}"
+                    Text="-5m" />
+            </HorizontalStackLayout>
+            <Label Style="{StaticResource SmallLabel}" Text="Time will be updated automatically when first beep entry recorded." Margin="0,0,0,10" />
+            
+            <Label Style="{StaticResource MediumLabel}" Text="Lat/Lng:" />
+            <HorizontalStackLayout Margin="0,0,0,10">
+                <Entry 
+                    WidthRequest="100"
+                    Text="{Binding BeepRecord.Latitude}" />
+                <Entry 
+                    WidthRequest="100"
+                    Text="{Binding BeepRecord.Longitude}" />
+                <Button
+                    Margin="4,0"
+                    Command="{Binding UpdateLatLongCommand}"
+                    Text="Get" >
+                    <Button.Triggers>
+
+                        <DataTrigger TargetType="Button"
+                            Binding="{Binding IsCheckingLocation}"
+                            Value="true">
+                            <Setter Property="IsVisible"
+                            Value="False" />
+                        </DataTrigger>
+
+                    </Button.Triggers>
+                </Button>
+                <ActivityIndicator IsRunning="{Binding IsCheckingLocation}" />
+            </HorizontalStackLayout>
+
+           
             <CollectionView ItemsSource="{Binding BeepRecord.BeepEntries}" 
                             HeightRequest="60" Margin="0" VerticalOptions="Start"
                             x:Name="beepEntriesCollectionView">
@@ -129,7 +173,7 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-
+            
             <Grid WidthRequest="240"
               HeightRequest="85"
               ColumnDefinitions="120, 120"
@@ -201,39 +245,6 @@
             </Grid>
 
 
-            <Label Style="{StaticResource MediumLabel}" Text="Recorded time:" />
-            <HorizontalStackLayout>
-                <DatePicker  Format="dd/MM/yyyy"
-                Date="{Binding BeepRecord.RecordedDate}" />
-                <TimePicker Time="{Binding BeepRecord.RecordedTime}" />
-            </HorizontalStackLayout>
-
-
-            <Label Style="{StaticResource MediumLabel}" Text="Lat/Lng:" />
-            <HorizontalStackLayout>
-                <Entry 
-                    WidthRequest="100"
-                    Text="{Binding BeepRecord.Latitude}" />
-                <Entry 
-                    WidthRequest="100"
-                    Text="{Binding BeepRecord.Longitude}" />
-                <Button
-                    Margin="4,0"
-                    Command="{Binding UpdateLatLongCommand}"
-                    Text="Get" >
-                    <Button.Triggers>
-
-                        <DataTrigger TargetType="Button"
-                            Binding="{Binding IsCheckingLocation}"
-                            Value="true">
-                            <Setter Property="IsVisible"
-                            Value="False" />
-                        </DataTrigger>
-
-                    </Button.Triggers>
-                </Button>
-                <ActivityIndicator IsRunning="{Binding IsCheckingLocation}" />
-            </HorizontalStackLayout>
 
             <HorizontalStackLayout Spacing="10" Margin="0,4,0,4">
                 <Label Style="{StaticResource MediumLabel}" Text="Status:" HorizontalOptions="Center" />
