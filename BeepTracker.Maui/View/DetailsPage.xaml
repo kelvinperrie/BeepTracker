@@ -131,20 +131,20 @@
 
 
             <Grid WidthRequest="240"
-              HeightRequest="75"
+              HeightRequest="85"
               ColumnDefinitions="120, 120"
               RowDefinitions="Auto, Auto"
               ColumnSpacing="2"
               RowSpacing="2"
               HorizontalOptions="Start">
-                <Button Text="Add 1" Grid.Column="0" Grid.Row="1"
-                    Command="{Binding Add1ToCurrentBeepEntryCommand}" />
-                <Button Text="Subtract 1" Grid.Column="1" Grid.Row="1"
-                    Command="{Binding Subtract1FromCurrentBeepEntryCommand}" />
                 <Button Text="Previous entry" Grid.Column="0" Grid.Row="0"
                     Command="{Binding PreviousBeepEntryCommand}" />
                 <Button Text="Next entry" Grid.Column="1" Grid.Row="0"
                     Command="{Binding NextBeepEntryCommand}" />
+                <Button Text="Add 1" Grid.Column="0" Grid.Row="1"
+                    Command="{Binding Add1ToCurrentBeepEntryCommand}" HeightRequest="50" />
+                <Button Text="Subtract 1" Grid.Column="1" Grid.Row="1"
+                    Command="{Binding Subtract1FromCurrentBeepEntryCommand}" HeightRequest="50" />
             </Grid>
 
             <Grid WidthRequest="240" 
