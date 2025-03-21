@@ -6,6 +6,8 @@ This is a proof of concept solution to assist with recording kiwi signals/beeps 
 
 The Beep Tracker android phone app can be run stand alone to record information on your phone to later be manually transcribed to a database. You can install it on a phone by installing the apk file here https://github.com/kelvinperrie/BeepTracker/releases/tag/v1.2.
 
+There are (slightly outdated) screenshots of the phone app further down the page.
+
 ## Background
 
 A subset of the kiwi released in the Kaitake ranges and Taranaki Maunga are tracked to act as an indicator for the rest of the population (e.g. are they breeding, where are they moving, have they been attacked by predators etc). Tracked kiwis have a transmitter attached to their leg which sends out a signal that can be received by a handheld receiver and aerial. On 10 minute intervals the kiwi's transmitter will transmit a sequence of beeps. Those beeps can be decoded to show things like when the kiwi last left the nest, or how long ago their eggs hatched. This 'beep record' looks something like this, with eight pairs of beeps:
