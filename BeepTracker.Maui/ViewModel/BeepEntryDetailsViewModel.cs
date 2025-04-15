@@ -1,9 +1,11 @@
 ﻿using BeepTracker.Maui.Services;
+using CommunityToolkit.Maui.Core.Views;
 using MetroLog;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace BeepTracker.Maui.ViewModel;
@@ -170,6 +172,67 @@ public partial class BeepEntryDetailsViewModel : BaseViewModel, INotifyPropertyC
             BeepRecord.RecordedDateTime = DateTime.Now;
         }
     }
+
+    [RelayCommand]
+    public void ShowBeepInfo()
+    {
+        var message = "";
+        for (var i = 0; i < this.BeepRecord.BeepEntries.Count / 2; i++)
+        {
+            var beepIndex = i * 2;
+            var part = CalculateBeepInfo(i + 1, new Tuple<int, int>(BeepRecord.BeepEntries[beepIndex].Value ?? 0, BeepRecord.BeepEntries[beepIndex + 1].Value ?? 0));
+            message += part + "\n";
+        }
+
+        Shell.Current.DisplayAlert("Beep info", message, "OK");
+    }
+
+    private string CalculateBeepInfo(int coupletIndex, Tuple<int,int> couplet)
+    {
+        var result = "";
+        //1.Days since change of state.
+        //2.Days since hatch.
+        //3.Days since desertion alert was triggered.
+        //4.Time of emergence.
+        //5.Weeks of life remaining for the transmitter.
+        //6.Activity Yesterday.
+        //7.Activity 2 days ago.
+        //8.True mean of the last 4 days.
+
+        var item1 = couplet.Item1 == 0 ? "?" : (couplet.Item1 - 2).ToString();
+        var item2 = couplet.Item2 == 0 ? "?" : (couplet.Item2 - 2).ToString();
+
+        switch (coupletIndex)
+        {
+            case 1:
+                result = "Days since change of state: " + item1 + item2 + " days";
+                break;
+            case 2:
+                result = "Days since hatch: " + item1 + item2 + " days";
+                break;
+            case 3:
+                result = "Days since desertion alert was triggered: " + item1 + item2 + " days";
+                break;
+            case 4:
+                result = "Time of emergence: " + item1 + item2 + " hours ago";
+                break;
+            case 5:
+                result = "Weeks of life remaining for the transmitter: " + item1 + item2 + " weeks";
+                break;
+            case 6:
+                result = "Activity Yesterday: " + item1 + item2 + "0 minutes";
+                break;
+            case 7:
+                result = "Activity 2 days ago: " + item1 + item2 + "0 minutes";
+                break;
+            case 8:
+                result = "True mean of the last 4 days: " + item1 + item2 + "0 minutes";
+                break;
+        }
+
+        return result;
+    }
+
 
     [RelayCommand]
     public void Add1ToCurrentBeepEntry()

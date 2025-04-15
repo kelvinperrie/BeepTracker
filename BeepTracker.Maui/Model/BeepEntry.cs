@@ -30,6 +30,20 @@ namespace BeepTracker.Maui.Model
 
         // indicates this beep entry is the first in a couplet
         public bool IsFirstItemInCouplet { get { return Index % 2 == 0; } }
+
+        public int CoupletIndex
+        {
+            get
+            {
+                if(Index % 2 == 1)
+                {
+                    return (Index + 1) / 2;
+                } else
+                {
+                    return (Index + 2) / 2;
+                }
+            }
+        }
     }
 
     public class BeepEntryMetadata
